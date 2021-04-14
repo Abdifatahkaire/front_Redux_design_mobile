@@ -36,15 +36,16 @@ export default class Login extends React.Component {
                          <View>
                      
                      <View style={{paddingBottom:15}}>
-                       <TextInput style={{borderWidth:1}}  placeholder='Entrer votre email' onChangeText={(text)=>{this.setState({email:text})}}  />
+                       <TextInput value={this.state.email} style={{borderWidth:1}}  placeholder='Entrer votre email' onChangeText={(text)=>{this.setState({email:text})}}  />
                      </View>
                      <View  style={{paddingBottom:15}}>
-                       <TextInput style={{borderWidth:1}} placeholder='Entrer votre mot de passe' onChangeText={(text)=>{this.setState({mot_de_passe:text})}}  />
+                       <TextInput value={this.state.mot_de_passe} style={{borderWidth:1}} placeholder='Entrer votre mot de passe' onChangeText={(text)=>{this.setState({mot_de_passe:text})}}  />
                      </View>
                     
                      <View style={{paddingBottom:15}}>
                          <TouchableOpacity
                                 style={{backgroundColor:'#63ff9e',paddingBottom:10,paddingTop:10,alignItems:'center'}}
+                                
                                 >
                                 <Text style={{color:'#fff',fontSize:16}}>Inscrivez-vous</Text>
                         </TouchableOpacity>
