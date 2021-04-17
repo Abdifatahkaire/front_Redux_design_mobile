@@ -25,20 +25,21 @@ async function save(value) {
     await SecureStore.deleteItemAsync('userToken');
   }
 
-
-class  Home extends React.Component {
+  
+class  Logout extends React.Component {
   
     constructor(props){
         super(props);
         this.SignOut=this.SignOut.bind(this);
-    }
-
-    componentDidMount(){
-        console.log('home');
-      console.log(this.props.userToken);
         getValueFor();
     }
-   
+    componentDidMount(){
+        
+        this.SignOut();
+        console.log('logout');
+        console.log(this.props.userToken);
+    }
+
     SignOut(){
       
       this.props.signOut();
@@ -46,14 +47,11 @@ class  Home extends React.Component {
     }
 
     render(){
-        
-    
-       
+      
+  
         return(
-            <View>
-                <Text>Signed in !</Text>
-                <Button title="Sign out" onPress={this.SignOut} />
-            </View>
+           null
+           
            );
     }
 }
@@ -64,4 +62,4 @@ const mapStateToProps = state => {
     return state;
   };
 
-export default connect(mapStateToProps,{ signOut })(Home);
+export default connect(mapStateToProps,{ signOut })(Logout);

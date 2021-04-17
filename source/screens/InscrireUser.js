@@ -76,7 +76,7 @@ class  InscrireUser extends React.Component {
 
         let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
         if (reg.test(this.state.email) === false) {
-            Alert.alert("Email is Not Correct");
+            Alert.alert("ceci n'est un email adresse");
           }
           else {
             if(this.state.mot_de_passe==this.state.c_mot_de_passe){
@@ -86,11 +86,22 @@ class  InscrireUser extends React.Component {
                 console.log(this.state.mot_de_passe);
                 console.log(this.state.c_mot_de_passe);
                 console.log(this.state.type);
-        axios.post('http://192.168.1.15:4000/api/auth/signup',{nom:this.state.nom,tel:this.state.tel,email:this.state.email,type:this.state.type,mot_de_passe:this.state.mot_de_passe})
-        .then(response=>{
-            
-           Alert.alert(response.data.message);
-        })
+                axios.post('http://192.168.1.15:4000/api/auth/signup',{nom:this.state.nom,tel:this.state.tel,email:this.state.email,type:this.state.type,mot_de_passe:this.state.mot_de_passe})
+                .then(response=>{
+                    
+                    if(response.data.messageSuccess===undefined){
+
+                        Alert.alert(response.data.messageError);
+                      }
+                    else{
+                       
+                        Alert.alert(response.data.messageSuccess);
+                        this.props.navigation.navigate('Se connecter');
+                    }
+
+               
+
+                })
             }
             else{
                 Alert.alert("confirmer votre mot de passe");
@@ -178,60 +189,66 @@ class  InscrireUser extends React.Component {
        const bordercolor3=this.borderColor3();
        const bordercolor4=this.borderColor4();
        const bordercolor5=this.borderColor5();
-
+       
 
         return(
             <SafeAreaView style={styles.container}>
-            <ScrollView style={styles.scrollView}>
-                <View>
-                     <View style={{alignItems:'center',marginBottom:20}}>
-                        <View >
-                            <View><Image source={moto}  /></View>
-                            <View style={{alignItems:'center',justifyContent:'center',flexDirection:'row'}}>
-                            <Text style={{color:'#63ff9e',fontSize:40}}>D</Text>
-                            <Text style={{fontSize:25}}>eliveroo</Text>
+
+             <View style={{flex:1,marginTop:0,marginLeft:20,marginRight:20}}>
+                    <ScrollView style={styles.scrollView}>
+                        
+                            <View style={{alignItems:'center',marginBottom:20}}>
+                                <TouchableOpacity  onPress={()=>{this.props.navigation.navigate('Deliveroo')}}>
+                                    <View><Image source={moto}  /></View>
+                                    <View style={{alignItems:'center',justifyContent:'center',flexDirection:'row'}}>
+                                    <Text style={{color:'#63ff9e',fontSize:40}}>D</Text>
+                                    <Text style={{fontSize:25}}>eliveroo</Text>
+                                    </View>
+                                </TouchableOpacity>
                             </View>
-                        </View>
-                     </View>
-                     <View>
-                         <View>
-                         <View style={{paddingBottom:15}}>
-                        <TextInput value={this.state.nom}  onFocus={this.handleFocus1}  onBlur={this.handleBlur1}  style={{borderWidth:1,borderColor:bordercolor1}}  placeholder='Entrer votre nom' onChangeText={(text)=>{this.setState({nom:text})}}  />
-                     </View>
-                     <View style={{paddingBottom:15}}>
-                        <TextInput value={this.state.tel} onFocus={this.handleFocus2}  onBlur={this.handleBlur2}  style={{borderWidth:1,borderColor:bordercolor2}} keyboardType="numeric"  placeholder='Entrer votre tel' onChangeText={(text)=>{this.setState({tel:text})}}  />
-                     </View>
-                     <View style={{paddingBottom:15}}>
-                       <TextInput value={this.state.email} onFocus={this.handleFocus3}  onBlur={this.handleBlur3} style={{borderWidth:1,borderColor:bordercolor3}} keyboardType="email-address" placeholder='Entrer votre email' onChangeText={(text)=>{this.setState({email:text})}}  />
-                     </View>
-                     <View  
+                            <View>
+                                <View>
+                                <View style={{paddingBottom:19}}>
+                                <TextInput value={this.state.nom}  onFocus={this.handleFocus1}  onBlur={this.handleBlur1}  style={{borderWidth:1,borderColor:bordercolor1,borderRadius:4,paddingLeft:10,paddingTop:5,paddingBottom:5}} maxLength = {10}  placeholder='Entrer votre nom' onChangeText={(text)=>{this.setState({nom:text})}}  />
+                            </View>
+                            <View style={{paddingBottom:19}}>
+                                <TextInput value={this.state.tel} onFocus={this.handleFocus2}  onBlur={this.handleBlur2}  style={{borderWidth:1,borderColor:bordercolor2,borderRadius:4,paddingLeft:10,paddingTop:5,paddingBottom:5}} maxLength = {8} keyboardType="numeric"  placeholder='Entrer votre tel' onChangeText={(text)=>{this.setState({tel:text})}}  />
+                            </View>
+                            <View style={{paddingBottom:19}}>
+                            <TextInput value={this.state.email} onFocus={this.handleFocus3}  onBlur={this.handleBlur3} style={{borderWidth:1,borderColor:bordercolor3,borderRadius:4,paddingLeft:10,paddingTop:5,paddingBottom:5}} maxLength = {25} keyboardType="email-address" placeholder='Entrer votre email' onChangeText={(text)=>{this.setState({email:text})}}  />
+                            </View>
+                            <View  
+                            
+                            style={{paddingBottom:19}}>
+                            <TextInput value={this.state.mot_de_passe} 
+                            onFocus={this.handleFocus4} 
+                                onBlur={this.handleBlur4} 
+                                style={{borderWidth:1,borderColor:bordercolor4,borderRadius:4,paddingLeft:10,paddingTop:5,paddingBottom:5}} 
+                                placeholder='Entrer votre mot de passe' 
+                                onChangeText={(text)=>{this.setState({mot_de_passe:text})}}
+                                maxLength = {15}
+                                secureTextEntry
+                                />
+                            
+                            </View>
+                            <View  style={{paddingBottom:19}}>
+                            <TextInput   secureTextEntry value={this.state.c_mot_de_passe} maxLength = {15} onFocus={this.handleFocus5}  onBlur={this.handleBlur5} style={{borderWidth:1,borderColor:bordercolor5,borderRadius:4,paddingLeft:10,paddingTop:5,paddingBottom:5}} placeholder='Confirmer votre mot de passe' onChangeText={(text)=>{this.setState({c_mot_de_passe:text})}}  />
+                            </View>
+                            <View style={{paddingBottom:19}}>
+                                <TouchableOpacity
+                                        style={{backgroundColor:'#63ff9e',borderRadius:4,paddingLeft:10,paddingTop:10,paddingBottom:10,alignItems:'center'}}
+                                        onPress={this.SignUpUser}
+                                        >
+                                        <Text style={{color:'#fff',fontSize:16}}>Inscrivez-vous</Text>
+                                </TouchableOpacity>
+                            </View>
+                                </View>
+                            </View>
+                       
                     
-                    style={{paddingBottom:15}}>
-                       <TextInput value={this.state.mot_de_passe} 
-                       onFocus={this.handleFocus4} 
-                        onBlur={this.handleBlur4} 
-                        style={{borderWidth:1,borderColor:bordercolor4}} 
-                        placeholder='Entrer votre mot de passe' 
-                        onChangeText={(text)=>{this.setState({mot_de_passe:text})}}
-                          />
-                    
-                     </View>
-                     <View  style={{paddingBottom:15}}>
-                       <TextInput value={this.state.c_mot_de_passe} onFocus={this.handleFocus5}  onBlur={this.handleBlur5} style={{borderWidth:1,borderColor:bordercolor5}} placeholder='Confirmer votre mot de passe' onChangeText={(text)=>{this.setState({c_mot_de_passe:text})}}  />
-                     </View>
-                     <View style={{paddingBottom:15}}>
-                         <TouchableOpacity
-                                style={{backgroundColor:'#63ff9e',paddingBottom:10,paddingTop:10,alignItems:'center'}}
-                                onPress={this.SignUpUser}
-                                >
-                                <Text style={{color:'#fff',fontSize:16}}>Inscrivez-vous</Text>
-                        </TouchableOpacity>
-                     </View>
-                         </View>
-                     </View>
-                </View>
-             
-            </ScrollView>
+                    </ScrollView>
+             </View>   
+            
           </SafeAreaView>
            );
     }
@@ -252,12 +269,13 @@ const styles = StyleSheet.create({
     container: {
       flex: 1,
       paddingTop: StatusBar.currentHeight,
-      borderWidth:1,
+      borderWidth:4,
       borderColor:'white'
     },
     scrollView: {
       
-      marginHorizontal: 20,
+     
+      
     },
     text: {
       fontSize: 42,

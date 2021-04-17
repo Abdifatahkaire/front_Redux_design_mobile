@@ -1,53 +1,169 @@
 import React from "react";
-import { StyleSheet,ScrollView,SafeAreaView ,StatusBar, Text,TextInput, View,Button,Image,TouchableOpacity } from 'react-native';
+import { StyleSheet,ScrollView,SafeAreaView ,StatusBar,Alert, Text,TextInput, View,Button,Image,TouchableOpacity } from 'react-native';
 
 import moto from '../Image/moto_livreur_inscrire.png';
 
+import {connect} from "react-redux";
+import { signIn  } from "../redux/action";
+import axios from 'axios';
+import * as SecureStore from 'expo-secure-store';
 
-export default class Login extends React.Component {
+async function save(value) {
+  await SecureStore.setItemAsync('userToken', value);
+}
+
+async function getValueFor() {
+  let result = await SecureStore.getItemAsync('userToken');
+   
+  if(result){
+     console.log(result);
+  }
+  else{
+      console.log('aucun token de dans');
+  }
+
+}
+
+async function deleteValue() {
+  await SecureStore.deleteItemAsync('userToken');
+}
+
+class Login extends React.Component {
 
     constructor(props){
         super(props);
         this.state={
             email:'',
             mot_de_passe:'',
+            isFocused1:false,
+            isFocused2:false,
+            error1:false,error2:false
         }
+        this.SignIn=this.SignIn.bind(this);
     }
+
+    componentDidMount(){
+      console.log('logIn');
+      console.log(this.props.userToken);
+      getValueFor();
+    }
+
+    handleFocus1 = () => this.setState({isFocused1: true})
+
+    handleBlur1 = () => this.setState({isFocused1: false})
+
+    handleFocus2 = () => this.setState({isFocused2: true})
+
+    handleBlur2 = () => this.setState({isFocused2: false})
+
+
+   
+    borderColor1() {
+      if(this.state.isFocused1 === false && this.state.error1 === true){
+         ;
+          return 'red';
+      }else if(this.state.isFocused1 === true ){
+          
+          return '#63ff9e';
+      }else{
+          
+          return '#000';
+      }
+  }
+  borderColor2() {
+      if(this.state.isFocused2 === false && this.state.error2 === true){
+         ;
+          return 'red';
+      }else if(this.state.isFocused2 === true ){
+          
+          return '#63ff9e';
+      }else{
+          
+          return '#000';
+      }
+  }
+ 
+
+  SignIn(){
+  
+        if(this.state.email === ''){
+          this.setState({error3:true})
+        }
+
+        if(this.state.mot_de_passe === ''){
+          this.setState({error4:true})
+        }
+       
+      if(this.state.email !=='' && this.state.mot_de_passe !==''){
+        
+        let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+        if (reg.test(this.state.email) === false) {
+            Alert.alert("ceci n'est un email adresse");
+        }else{
+          axios.post('http://192.168.1.15:4000/api/auth/signin',{email:this.state.email,mot_de_passe:this.state.mot_de_passe})
+        .then(response=>{
+       
+          if(response.data.accessToken===undefined){
+
+            console.log('undefineduuuu');
+            if(response.data.message){
+              console.log(response.data.message);
+              Alert.alert(response.data.message);
+            }
+          }
+          else{
+            this.props.signIn(response.data.accessToken);
+            save(response.data.accessToken);
+            
+          }
+           
+       
+        })
+
+        }
+
+      }
+
+
+  }
 
    
     render(){
       
-       
+      const bordercolor1=this.borderColor1();
+       const bordercolor2=this.borderColor2();
+      
+    
         return(
 
             <SafeAreaView style={styles.container}>
             <ScrollView style={styles.scrollView}>
                 <View>
                      <View style={{alignItems:'center',marginBottom:20}}>
-                        <View >
+                        <TouchableOpacity style={{borderWidth:1}} onPress={()=>{this.props.navigation.navigate('Deliveroo')}}>
                             <View><Image source={moto}  /></View>
                             <View style={{alignItems:'center',justifyContent:'center',flexDirection:'row'}}>
                             <Text style={{color:'#63ff9e',fontSize:40}}>D</Text>
                             <Text style={{fontSize:25}}>eliveroo</Text>
                             </View>
-                        </View>
+                        </TouchableOpacity>
                      </View>
                      <View>
                          <View>
                      
                      <View style={{paddingBottom:15}}>
-                       <TextInput value={this.state.email} style={{borderWidth:1}}  placeholder='Entrer votre email' onChangeText={(text)=>{this.setState({email:text})}}  />
+                       <TextInput value={this.state.email} onFocus={this.handleFocus1}  onBlur={this.handleBlur1} keyboardType='email-address' style={{borderWidth:1,borderColor:bordercolor1,borderRadius:4,paddingLeft:10,paddingTop:5,paddingBottom:5}}  placeholder='Entrer votre email' onChangeText={(text)=>{this.setState({email:text})}}  />
                      </View>
                      <View  style={{paddingBottom:15}}>
-                       <TextInput value={this.state.mot_de_passe} style={{borderWidth:1}} placeholder='Entrer votre mot de passe' onChangeText={(text)=>{this.setState({mot_de_passe:text})}}  />
+                       <TextInput value={this.state.mot_de_passe} onFocus={this.handleFocus2}  onBlur={this.handleBlur2}  secureTextEntry  style={{borderWidth:1,borderColor:bordercolor2,borderRadius:4,paddingLeft:10,paddingTop:5,paddingBottom:5}} placeholder='Entrer votre mot de passe' onChangeText={(text)=>{this.setState({mot_de_passe:text})}}  />
                      </View>
                     
                      <View style={{paddingBottom:15}}>
                          <TouchableOpacity
-                                style={{backgroundColor:'#63ff9e',paddingBottom:10,paddingTop:10,alignItems:'center'}}
-                                
+                                style={{backgroundColor:'#63ff9e',paddingBottom:10,paddingTop:10,borderRadius:4,alignItems:'center'}}
+                                onPress={this.SignIn}
                                 >
-                                <Text style={{color:'#fff',fontSize:16}}>Inscrivez-vous</Text>
+                                <Text style={{color:'#fff',fontSize:16}}>Se connecter</Text>
                         </TouchableOpacity>
                      </View>
                          </View>
@@ -63,6 +179,15 @@ export default class Login extends React.Component {
 
 
 }
+
+
+
+const mapStateToProps = state => {
+ 
+  return state;
+};
+
+export default connect(mapStateToProps,{ signIn  })(Login);
 
 
 
