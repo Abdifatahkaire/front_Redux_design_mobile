@@ -4,9 +4,10 @@ import { StyleSheet,ScrollView,SafeAreaView ,StatusBar,Alert, Text,TextInput, Vi
 import moto from '../Image/moto_livreur_inscrire.png';
 
 import {connect} from "react-redux";
-import { signIn  } from "../redux/action";
+import { signIn,restoreToken  } from "../redux/action";
 import axios from 'axios';
 import * as SecureStore from 'expo-secure-store';
+import jwtDecode from 'jwt-decode';
 
 async function save(value) {
   await SecureStore.setItemAsync('userToken', value);
@@ -16,13 +17,14 @@ async function getValueFor() {
   let result = await SecureStore.getItemAsync('userToken');
    
   if(result){
-     console.log(result);
+     return result;
   }
   else{
-      console.log('aucun token de dans');
+      return null;
   }
 
 }
+
 
 async function deleteValue() {
   await SecureStore.deleteItemAsync('userToken');
@@ -40,13 +42,34 @@ class Login extends React.Component {
             error1:false,error2:false
         }
         this.SignIn=this.SignIn.bind(this);
+        this.VerifyTokenValud=this.VerifyTokenValud.bind(this);
     }
 
     componentDidMount(){
-      console.log('logIn');
-      console.log(this.props.userToken);
-      getValueFor();
+      console.log('Login');
+      
+      this.VerifyTokenValud();
+      
     }
+
+
+    async VerifyTokenValud() {
+      let token = await getValueFor();
+      if(token!==null){
+         if (jwtDecode(token).exp < Date.now() / 1000) {
+           deleteValue();
+           console.log('token exist mais not valide');
+           console.log(token);
+           this.props.restoreToken(null);
+         }else{
+           console.log('token exist mais valide');
+           this.props.restoreToken(token);
+         }
+      }
+      else{
+       console.log(token);
+      }
+     }
 
     handleFocus1 = () => this.setState({isFocused1: true})
 
@@ -87,11 +110,11 @@ class Login extends React.Component {
   SignIn(){
   
         if(this.state.email === ''){
-          this.setState({error3:true})
+          this.setState({error1:true})
         }
 
         if(this.state.mot_de_passe === ''){
-          this.setState({error4:true})
+          this.setState({error2:true})
         }
        
       if(this.state.email !=='' && this.state.mot_de_passe !==''){
@@ -140,7 +163,7 @@ class Login extends React.Component {
             <ScrollView style={styles.scrollView}>
                 <View>
                      <View style={{alignItems:'center',marginBottom:20}}>
-                        <TouchableOpacity style={{borderWidth:1}} onPress={()=>{this.props.navigation.navigate('Deliveroo')}}>
+                        <TouchableOpacity  onPress={()=>{this.props.navigation.navigate('Deliveroo')}}>
                             <View><Image source={moto}  /></View>
                             <View style={{alignItems:'center',justifyContent:'center',flexDirection:'row'}}>
                             <Text style={{color:'#63ff9e',fontSize:40}}>D</Text>
@@ -187,7 +210,7 @@ const mapStateToProps = state => {
   return state;
 };
 
-export default connect(mapStateToProps,{ signIn  })(Login);
+export default connect(mapStateToProps,{ signIn,restoreToken  })(Login);
 
 
 

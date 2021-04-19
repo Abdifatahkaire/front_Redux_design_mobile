@@ -13,10 +13,10 @@ async function save(value) {
     let result = await SecureStore.getItemAsync('userToken');
      
     if(result){
-       console.log(result);
+       return result;
     }
     else{
-        console.log('aucun token de dans');
+        return null;
     }
   
   }
@@ -31,7 +31,7 @@ class  Logout extends React.Component {
     constructor(props){
         super(props);
         this.SignOut=this.SignOut.bind(this);
-        getValueFor();
+        
     }
     componentDidMount(){
         
