@@ -1,6 +1,6 @@
 import {SIGN_IN, SIGN_OUT, RESTORE_TOKEN } from "./actionTypes";
 
-let nextTodoId = 0;
+
 
 export const signIn = userToken => ({
   type: SIGN_IN,
@@ -11,7 +11,7 @@ export const signIn = userToken => ({
 
 export const signOut = () => ({
     type: SIGN_OUT
-  });
+});
 
 
 

@@ -1,5 +1,10 @@
 import { createStore } from 'redux';
-import reducerProfil from '../reducers/reducerProfil';
 
-export default createStore(reducerProfil);
+
+import reducer from '../index';
+
+
+
+
+export default createStore(reducer);
 

@@ -1,11 +1,11 @@
 import React from "react";
 import { StyleSheet, Text, View,Button,Image,TouchableOpacity } from 'react-native';
 import {connect} from "react-redux";
-import { signOut,restoreToken   } from "../redux/action";
+import { signOut,restoreToken   } from "../../redux/action";
 import axios from 'axios';
 import * as SecureStore from 'expo-secure-store';
 import jwtDecode from 'jwt-decode';
-import { DROPuserINFOANDEMAIl } from "../redux/actionUserInfo";
+import { DROPuserINFOANDEMAIl } from "../../redux/actionUserInfo";
 
 
 async function saveUserInfo(value) {
@@ -51,7 +51,7 @@ async function save(value) {
   }
 
 
-class  Home extends React.Component {
+class  ProfilClient extends React.Component {
   
     constructor(props){
         super(props);
@@ -93,7 +93,6 @@ class  Home extends React.Component {
      }
    
     SignOut(){
-      
       this.props.signOut();
        deleteValue();
        deleteUserInfo();
@@ -103,9 +102,11 @@ class  Home extends React.Component {
      
        
         return(
-            <View>
-                <Text>Signed in !</Text>
+            <View style={{marginTop:30}}>
+                <Text> Profils Client </Text>
+                <View>
                 <Button title="Sign out" onPress={this.SignOut} />
+                </View>
             </View>
            );
     }
@@ -117,4 +118,4 @@ const mapStateToProps = state => {
     return state;
   };
 
-export default connect(mapStateToProps,{ signOut,restoreToken,DROPuserINFOANDEMAIl })(Home);
+export default connect(mapStateToProps,{ signOut,restoreToken,DROPuserINFOANDEMAIl })(ProfilClient);

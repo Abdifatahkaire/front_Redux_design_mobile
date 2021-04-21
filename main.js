@@ -4,6 +4,7 @@ import { NavigationContainer,getFocusedRouteNameFromRoute } from '@react-navigat
 import { createStackNavigator } from '@react-navigation/stack';
 import {connect} from "react-redux";
 import { restoreToken  }  from './source/redux/action';
+import { DROPuserINFOANDEMAIl } from "./source/redux/actionUserInfo";
 import MyTabsInscription from './source/navigation/MyTabsInscription';
 import Home from './source/screens/Home';
 import Logo from './source/screens/Logo';
@@ -13,9 +14,36 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import Logout from './source/screens/Logout';
 import jwtDecode from 'jwt-decode';
 import NotificationsScreen from './source/screens/NotificationsScreen';
+import Index from './source/screens/index';
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
+
+
+
+async function saveUserInfo(value) {
+  await SecureStore.setItemAsync('userInfo', JSON.stringify(value));
+}
+
+async function getUserInfo() {
+  let result = await SecureStore.getItemAsync('userInfo');
+   
+  if(result){
+     return result;
+  }
+  else{
+      return null;
+  }
+
+}
+
+async function deleteUserInfo() {
+  await SecureStore.deleteItemAsync('userInfo');
+}
+
+
+
+
 
 
 async function save(value) {
@@ -35,7 +63,7 @@ async function getValueFor() {
 }
 
 
-async function deleteValue() {
+async function deleteValue(){
   await SecureStore.deleteItemAsync('userToken');
 } 
 
@@ -74,12 +102,16 @@ class main extends React.Component  {
 
    async VerifyTokenValud() {
     let token = await getValueFor();
+    
     if(token!==null){
        if (jwtDecode(token).exp < Date.now() / 1000) {
          deleteValue();
+         deleteUserInfo();
          console.log('token exist mais not valide');
          console.log(token);
+        
          this.props.restoreToken(null);
+         this.props.DROPuserINFOANDEMAIl();
        }else{
          console.log('token exist mais valide');
          this.props.restoreToken(token);
@@ -87,6 +119,7 @@ class main extends React.Component  {
     }
     else{
      console.log(token);
+     
     }
    }
 
@@ -98,7 +131,7 @@ class main extends React.Component  {
         return(
             <NavigationContainer>
                
-            {this.props.userToken == null ? (
+            {this.props.User_Token.userToken == null ? (
 
                <Stack.Navigator >
                    <Stack.Screen name="Deliveroo" component={Logo}/>
@@ -108,11 +141,7 @@ class main extends React.Component  {
                
                  
                ) : (
-                <Drawer.Navigator initialRouteName="Home">
-                    <Drawer.Screen name="Home" component={Home} />
-                    <Drawer.Screen name="Notifications" component={NotificationsScreen} />
-                    <Drawer.Screen name="deconnecter" component={Logout} />
-                </Drawer.Navigator> 
+                  <Index /> 
                ) } 
                
                
@@ -123,10 +152,12 @@ class main extends React.Component  {
 
 const mapStateToProps = state => {
  
+  
+   
     return state;
   };
 
-export default connect(mapStateToProps,{ restoreToken  })(main);
+export default connect(mapStateToProps,{ restoreToken,DROPuserINFOANDEMAIl  })(main);
 
 
 

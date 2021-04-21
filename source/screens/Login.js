@@ -5,12 +5,35 @@ import moto from '../Image/moto_livreur_inscrire.png';
 
 import {connect} from "react-redux";
 import { signIn,restoreToken  } from "../redux/action";
+import { ADDuserINFO,ADDuserADRESSE,DROPuserINFOANDEMAIl } from "../redux/actionUserInfo";
 import axios from 'axios';
 import * as SecureStore from 'expo-secure-store';
 import jwtDecode from 'jwt-decode';
 
+async function saveUserInfo(value) {
+  await SecureStore.setItemAsync('userInfo', JSON.stringify(value));
+}
+
+async function getUserInfo() {
+  let result = await SecureStore.getItemAsync('userInfo');
+   
+  if(result){
+     return result;
+  }
+  else{
+      return null;
+  }
+
+}
+
+async function deleteUserInfo() {
+  await SecureStore.deleteItemAsync('userInfo');
+}
+
+
+
 async function save(value) {
-  await SecureStore.setItemAsync('userToken', value);
+  await SecureStore.setItemAsync('userToken',value);
 }
 
 async function getValueFor() {
@@ -49,18 +72,23 @@ class Login extends React.Component {
       console.log('Login');
       
       this.VerifyTokenValud();
+      getUserInfo().then(x=>{console.log(x)});
       
     }
 
 
     async VerifyTokenValud() {
       let token = await getValueFor();
+      
       if(token!==null){
          if (jwtDecode(token).exp < Date.now() / 1000) {
            deleteValue();
+           deleteUserInfo();
            console.log('token exist mais not valide');
            console.log(token);
+          
            this.props.restoreToken(null);
+           this.props.DROPuserINFOANDEMAIl();
          }else{
            console.log('token exist mais valide');
            this.props.restoreToken(token);
@@ -68,6 +96,7 @@ class Login extends React.Component {
       }
       else{
        console.log(token);
+       
       }
      }
 
@@ -136,7 +165,18 @@ class Login extends React.Component {
           }
           else{
             this.props.signIn(response.data.accessToken);
+
+            let userINFO={
+              nom:response.data.nom,
+              tel:response.data.tel,
+              type:response.data.type,
+              email:response.data.email
+            };
+
+            this.props.ADDuserINFO(userINFO);
+            this.props.ADDuserADRESSE(response.data.email);
             save(response.data.accessToken);
+            saveUserInfo(userINFO);
             
           }
            
@@ -156,7 +196,7 @@ class Login extends React.Component {
       const bordercolor1=this.borderColor1();
        const bordercolor2=this.borderColor2();
       
-    
+     
         return(
 
             <SafeAreaView style={styles.container}>
@@ -210,7 +250,7 @@ const mapStateToProps = state => {
   return state;
 };
 
-export default connect(mapStateToProps,{ signIn,restoreToken  })(Login);
+export default connect(mapStateToProps,{ signIn,restoreToken,ADDuserINFO,ADDuserADRESSE,DROPuserINFOANDEMAIl  })(Login);
 
 
 

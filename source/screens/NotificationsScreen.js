@@ -6,6 +6,28 @@ import { signIn,restoreToken  } from "../redux/action";
 import axios from 'axios';
 import * as SecureStore from 'expo-secure-store';
 import jwtDecode from 'jwt-decode';
+import { DROPuserINFOANDEMAIl } from "../redux/actionUserInfo";
+
+
+async function saveUserInfo(value) {
+  await SecureStore.setItemAsync('userInfo', JSON.stringify(value));
+}
+
+async function getUserInfo() {
+  let result = await SecureStore.getItemAsync('userInfo');
+   
+  if(result){
+     return result;
+  }
+  else{
+      return null;
+  }
+
+}
+
+async function deleteUserInfo() {
+  await SecureStore.deleteItemAsync('userInfo');
+}
 
 
 async function save(value) {
@@ -47,19 +69,25 @@ class  NotificationsScreen extends React.Component {
    
     async VerifyTokenValud() {
         let token = await getValueFor();
+       
         if(token!==null){
-           if (jwtDecode(token).exp < Date.now() / 1000) {
+           if(jwtDecode(token).exp < Date.now() / 1000) {
              deleteValue();
+             deleteUserInfo();
              console.log('token exist mais not valide');
              console.log(token);
+          
              this.props.restoreToken(null);
+             this.props.DROPuserINFOANDEMAIl();
            }else{
              console.log('token exist mais valide');
              this.props.restoreToken(token);
+             console.log(token);
            }
         }
         else{
          console.log(token);
+        
         }
        }
     
@@ -82,4 +110,4 @@ const mapStateToProps = state => {
     return state;
 };
 
-export default connect(mapStateToProps,{ restoreToken })(NotificationsScreen);
+export default connect(mapStateToProps,{ restoreToken,DROPuserINFOANDEMAIl })(NotificationsScreen);

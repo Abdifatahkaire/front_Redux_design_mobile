@@ -2,8 +2,26 @@ import React from "react";
 import { StyleSheet, Text, View,Button,Image,TouchableOpacity } from 'react-native';
 import {connect} from "react-redux";
 import { signOut   } from "../redux/action";
+import { DROPuserINFOANDEMAIl } from "../redux/actionUserInfo";
 import axios from 'axios';
 import * as SecureStore from 'expo-secure-store';
+
+
+async function getUserInfo() {
+  let result = await SecureStore.getItemAsync('userInfo');
+   
+  if(result){
+     return result;
+  }
+  else{
+      return null;
+  }
+
+}
+
+async function deleteUserInfo() {
+  await SecureStore.deleteItemAsync('userInfo');
+}
 
 async function save(value) {
     await SecureStore.setItemAsync('userToken', value);
@@ -37,13 +55,15 @@ class  Logout extends React.Component {
         
         this.SignOut();
         console.log('logout');
-        console.log(this.props.userToken);
+       
     }
 
     SignOut(){
       
       this.props.signOut();
+      this.props.DROPuserINFOANDEMAIl();
        deleteValue();
+       deleteUserInfo();
     }
 
     render(){
@@ -62,4 +82,4 @@ const mapStateToProps = state => {
     return state;
   };
 
-export default connect(mapStateToProps,{ signOut })(Logout);
+export default connect(mapStateToProps,{ signOut,DROPuserINFOANDEMAIl })(Logout);

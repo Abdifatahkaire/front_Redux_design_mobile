@@ -1,11 +1,11 @@
 import React from "react";
 import { StyleSheet, Text, View,Button,Image,TouchableOpacity } from 'react-native';
 import {connect} from "react-redux";
-import { signOut,restoreToken   } from "../redux/action";
+import { signOut,restoreToken   } from "../../redux/action";
 import axios from 'axios';
 import * as SecureStore from 'expo-secure-store';
 import jwtDecode from 'jwt-decode';
-import { DROPuserINFOANDEMAIl } from "../redux/actionUserInfo";
+import { DROPuserINFOANDEMAIl } from "../../redux/actionUserInfo";
 
 
 async function saveUserInfo(value) {
@@ -51,11 +51,11 @@ async function save(value) {
   }
 
 
-class  Home extends React.Component {
+class  ListeClient extends React.Component {
   
     constructor(props){
         super(props);
-        this.SignOut=this.SignOut.bind(this);
+        
         this.VerifyTokenValud=this.VerifyTokenValud.bind(this);
     }
 
@@ -92,20 +92,15 @@ class  Home extends React.Component {
       }
      }
    
-    SignOut(){
-      
-      this.props.signOut();
-       deleteValue();
-       deleteUserInfo();
-    }
+    
 
     render(){
      
        
         return(
-            <View>
-                <Text>Signed in !</Text>
-                <Button title="Sign out" onPress={this.SignOut} />
+            <View style={{marginTop:30}}>
+                <Text>Liste  Client </Text>
+                
             </View>
            );
     }
@@ -117,4 +112,4 @@ const mapStateToProps = state => {
     return state;
   };
 
-export default connect(mapStateToProps,{ signOut,restoreToken,DROPuserINFOANDEMAIl })(Home);
+export default connect(mapStateToProps,{ signOut,restoreToken,DROPuserINFOANDEMAIl })(ListeClient);

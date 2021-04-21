@@ -217,7 +217,7 @@ import axios from 'axios';
                                 <TextInput value={this.state.tel} onFocus={this.handleFocus2}  onBlur={this.handleBlur2}  style={{borderWidth:1,borderColor:bordercolor2,borderRadius:4,paddingLeft:10,paddingTop:5,paddingBottom:5}} maxLength = {8} keyboardType="numeric"  placeholder='Entrer votre tel' onChangeText={(text)=>{this.setState({tel:text})}}  />
                             </View>
                             <View style={{paddingBottom:19}}>
-                            <TextInput value={this.state.email} onFocus={this.handleFocus3}  onBlur={this.handleBlur3} style={{borderWidth:1,borderColor:bordercolor3,borderRadius:4,paddingLeft:10,paddingTop:5,paddingBottom:5}} maxLength = {25} keyboardType="email-address" placeholder='Entrer votre email' onChangeText={(text)=>{this.setState({email:text})}}  />
+                            <TextInput value={this.state.email} onFocus={this.handleFocus3}  onBlur={this.handleBlur3} style={{borderWidth:1,borderColor:bordercolor3,borderRadius:4,paddingLeft:10,paddingTop:5,paddingBottom:5}} maxLength = {30} keyboardType="email-address" placeholder='Entrer votre email' onChangeText={(text)=>{this.setState({email:text})}}  />
                             </View>
                             <View  
                             
