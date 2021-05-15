@@ -16,9 +16,10 @@ import ImageProfilgray from '../../Image/Profil_ills1_gray.png';
 import ImageProfilgreen from '../../Image/Profil_ills1.png';
 
 import Liste from './liste';
-import Profil from './profil';
+import MyStackProfil from './ProfilTabs';
 import Map from './map';
-
+import Colis from './Colis';
+import IndexColis from './IndexColis';
 
 const Tabsbottom = createBottomTabNavigator();
 
@@ -32,7 +33,7 @@ export default function IndexClient(){
       tabBarIcon: ({ focused, color, size }) => {
         let iconName;
 
-        if (route.name === 'Map') {
+        if (route.name === 'Colis') {
           iconName = focused ? <Image source={ImageMapgreen} /> : <Image source={ImageMapgray} /> ;
         } else if (route.name === 'Profile') {
           iconName = focused ? <Image source={ImageProfilgreen} /> : <Image source={ImageProfilgray} />;
@@ -54,9 +55,9 @@ export default function IndexClient(){
     
      
      >
-        <Tabsbottom.Screen name="Map" component={Map} />
-        <Tabsbottom.Screen name="Liste"  component={Liste} options={{ tabBarBadge: 5 }}/>
-        <Tabsbottom.Screen name="Profile" component={Profil} />
+        <Tabsbottom.Screen name="Colis" component={IndexColis} />
+        
+        <Tabsbottom.Screen name="Profile" component={MyStackProfil} />
        
       </Tabsbottom.Navigator>
      

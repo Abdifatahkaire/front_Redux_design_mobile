@@ -52,7 +52,7 @@ class  InscrireUser extends React.Component {
 
 
 
-    SignUpUser(){
+    async SignUpUser(){
 
         if(this.state.nom === ''){
             this.setState({error1:true})
@@ -86,22 +86,29 @@ class  InscrireUser extends React.Component {
                 console.log(this.state.mot_de_passe);
                 console.log(this.state.c_mot_de_passe);
                 console.log(this.state.type);
-                axios.post('http://192.168.1.15:4000/api/auth/signup',{nom:this.state.nom,tel:this.state.tel,email:this.state.email,type:this.state.type,mot_de_passe:this.state.mot_de_passe})
-                .then(response=>{
+                try {
                     
-                    if(response.data.messageSuccess===undefined){
+                    axios.post('http://192.168.1.15:4000/api/auth/signup',{nom:this.state.nom,tel:this.state.tel,email:this.state.email,type:this.state.type,mot_de_passe:this.state.mot_de_passe})
+                    .then(response=>{
+                        
+                        if(response.data.messageSuccess===undefined){
+    
+                            Alert.alert(response.data.messageError);
+                          }
+                        else{
+                           
+                            Alert.alert(response.data.messageSuccess);
+                            this.props.navigation.navigate('Se connecter');
+                        }
+    
+                   
+    
+                    })
 
-                        Alert.alert(response.data.messageError);
-                      }
-                    else{
-                       
-                        Alert.alert(response.data.messageSuccess);
-                        this.props.navigation.navigate('Se connecter');
-                    }
-
-               
-
-                })
+                } catch (error) {
+                    
+                }
+                
             }
             else{
                 Alert.alert("confirmer votre mot de passe");

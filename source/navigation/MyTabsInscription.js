@@ -148,7 +148,31 @@ function MyTabsInscription({ navigation, route }) {
   }, [navigation, route]);
 
   return (
-    <Tab.Navigator tabBarOptions={{keyboardHidesTabBar: true}} tabBar={props => <MyTabBar {...props}  />}>
+    <Tab.Navigator 
+    
+    screenOptions={({ route }) => ({
+      tabBarIcon: ({ focused, color, size }) => {
+        let iconName;
+
+        if (route.name === 'Utilisateurs') {
+          iconName = focused ? <Image source={addButtongreen} /> : <Image source={addButtonGray} /> ;
+        } else if (route.name === 'Livreur') {
+          iconName = focused ? <Image source={addButtongreen} /> : <Image source={addButtonGray} />;
+        }
+        
+
+        // You can return any component that you like here!
+        return iconName;
+      },
+    })}
+
+    tabBarOptions={{
+      activeTintColor: '#63ff9a',
+      inactiveTintColor: 'gray',
+      keyboardHidesTabBar: true
+    }}
+    
+    >
       <Tab.Screen name="Utilisateurs" component={InscrireUser}  />
       <Tab.Screen name="Livreur" component={InscrireLivreur}/>
     </Tab.Navigator>

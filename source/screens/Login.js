@@ -6,9 +6,11 @@ import moto from '../Image/moto_livreur_inscrire.png';
 import {connect} from "react-redux";
 import { signIn,restoreToken  } from "../redux/action";
 import { ADDuserINFO,ADDuserADRESSE,DROPuserINFOANDEMAIl } from "../redux/actionUserInfo";
+
 import axios from 'axios';
 import * as SecureStore from 'expo-secure-store';
 import jwtDecode from 'jwt-decode';
+
 
 async function saveUserInfo(value) {
   await SecureStore.setItemAsync('userInfo', JSON.stringify(value));
@@ -164,19 +166,36 @@ class Login extends React.Component {
             }
           }
           else{
-            this.props.signIn(response.data.accessToken);
+            
 
-            let userINFO={
-              nom:response.data.nom,
-              tel:response.data.tel,
-              type:response.data.type,
-              email:response.data.email
-            };
+            
+             
+            this.props.User_Info.socket.auth={ email: response.data.email };
+            this.props.User_Info.socket.connect(); 
 
-            this.props.ADDuserINFO(userINFO);
+            this.props.User_Info.socket.on('session',(data) => {
+             
+              let userINFO={
+                nom:response.data.nom,
+                tel:response.data.tel,
+                type:response.data.type,
+                email:response.data.email,
+                userID:data.userID
+              };
+              
+              this.props.User_Info.socket.userID=data.userID;
+                this.props.ADDuserINFO(userINFO);
+                saveUserInfo(userINFO);
+            });
+
+
+            
+
+            
             this.props.ADDuserADRESSE(response.data.email);
+            
             save(response.data.accessToken);
-            saveUserInfo(userINFO);
+            this.props.signIn(response.data.accessToken);
             
           }
            

@@ -61,7 +61,7 @@ class  ProfilLivreur extends React.Component {
 
     componentDidMount(){
        
-      console.log('Home');
+      console.log('Profil');
    
       this.VerifyTokenValud();
       getValueFor().then(x=>{console.log(x)});
@@ -96,6 +96,7 @@ class  ProfilLivreur extends React.Component {
       this.props.signOut();
        deleteValue();
        deleteUserInfo();
+       this.props.User_Info.socket.disconnect();
     }
 
     render(){

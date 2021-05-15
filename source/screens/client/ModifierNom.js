@@ -1,12 +1,12 @@
 import React from "react";
-import { StyleSheet, Text, View,Button,Image,TouchableOpacity,Dimensions } from 'react-native';
+import { StyleSheet, Text,TextInput, View,Button,Image,TouchableOpacity } from 'react-native';
 import {connect} from "react-redux";
 import { signOut,restoreToken   } from "../../redux/action";
 import axios from 'axios';
 import * as SecureStore from 'expo-secure-store';
 import jwtDecode from 'jwt-decode';
 import { DROPuserINFOANDEMAIl } from "../../redux/actionUserInfo";
-import MapView from 'react-native-maps';
+
 
 async function saveUserInfo(value) {
   await SecureStore.setItemAsync('userInfo', JSON.stringify(value));
@@ -51,54 +51,11 @@ async function save(value) {
   }
 
 
- 
-  async function saveColisInfos(value){
-    await SecureStore.setItemAsync('colisInfo', JSON.stringify(value));
-  }
-  
-  async function getColisInfos() {
-    let result = await SecureStore.getItemAsync('colisInfo');
-     
-    if(result){
-       return result;
-    }
-    else{
-        return null;
-    }
-  
-  }
-
-  async function deleteColisInfos() {
-    await SecureStore.deleteItemAsync('colisInfo');
-  }
-
-  async function saveUserSelected(){
-    await SecureStore.setItemAsync('userSelected', JSON.stringify(value));
-  } 
- 
-  async function getUserSelected() {
-    let result = await SecureStore.getItemAsync('userSelected');
-     
-    if(result){
-       return result;
-    }
-    else{
-        return null;
-    }
-  
-  }
-
-  async function deleteUserSelected() {
-    await SecureStore.deleteItemAsync('userSelected');
-  }
-
-
-
-class  MapClient extends React.Component {
+class  ModifierNom extends React.Component {
   
     constructor(props){
         super(props);
-        
+        this.SignOut=this.SignOut.bind(this);
         this.VerifyTokenValud=this.VerifyTokenValud.bind(this);
     }
 
@@ -124,8 +81,6 @@ class  MapClient extends React.Component {
            this.props.restoreToken(null);
            this.props.DROPuserINFOANDEMAIl();
          }else{
-
-          
            console.log('token exist mais valide');
            this.props.restoreToken(token);
            
@@ -137,37 +92,34 @@ class  MapClient extends React.Component {
       }
      }
    
-    
+    SignOut(){
+      this.props.signOut();
+       deleteValue();
+       deleteUserInfo();
+    }
 
     render(){
      
        
         return(
-          <View style={styles.container}>
-          <MapView style={styles.map} />
-        </View>
+            <View style={{marginTop:30,backgroundColor:'#ECF0F1'}}>
+                
+                <TextInput placeholder='Modifier Votre Nom' />
+                <TouchableOpacity
+                 style={{backgroundColor:'#ECF0F1'}}
+                >
+                <Text style={{fontSize:20}}>Modifier</Text>
+                
+                </TouchableOpacity>
+            </View>
            );
     }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    height:'100%',
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-    
-    
-  },
-  map: {
-    width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height,
-  },
-});
 
 const mapStateToProps = state => {
  
     return state;
   };
 
-export default connect(mapStateToProps,{ signOut,restoreToken,DROPuserINFOANDEMAIl })(MapClient);
+export default connect(mapStateToProps,{ signOut,restoreToken,DROPuserINFOANDEMAIl })(ModifierNom);

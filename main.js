@@ -4,6 +4,7 @@ import { NavigationContainer,getFocusedRouteNameFromRoute } from '@react-navigat
 import { createStackNavigator } from '@react-navigation/stack';
 import {connect} from "react-redux";
 import { restoreToken  }  from './source/redux/action';
+import { ADDuserINFO,ADDuserADRESSE } from './source/redux/actionUserInfo';
 import { DROPuserINFOANDEMAIl } from "./source/redux/actionUserInfo";
 import MyTabsInscription from './source/navigation/MyTabsInscription';
 import Home from './source/screens/Home';
@@ -15,6 +16,9 @@ import Logout from './source/screens/Logout';
 import jwtDecode from 'jwt-decode';
 import NotificationsScreen from './source/screens/NotificationsScreen';
 import Index from './source/screens/index';
+
+import axios from 'axios';
+
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
@@ -114,7 +118,40 @@ class main extends React.Component  {
          this.props.DROPuserINFOANDEMAIl();
        }else{
          console.log('token exist mais valide');
+         
+         let userInfo=await getUserInfo();
+         let user=JSON.parse(userInfo);
+
+         if(this.props.User_Info.socket.userID===undefined){
+               
+
+          this.props.User_Info.socket.auth={ email: user.email };
+          this.props.User_Info.socket.connect(); 
+
+          this.props.User_Info.socket.on('session',(data) => {
+           
+            this.props.User_Info.socket.userID=data.userID;
+
+             
+
+
+          });
+
+       
+     
+        
+          
+
+
+        }
+        else{
+          console.log('il y a socket.userID');
+        }
+
+         this.props.ADDuserINFO(user);
+         this.props.ADDuserADRESSE(user.email);
          this.props.restoreToken(token);
+
        }
     }
     else{
@@ -157,7 +194,7 @@ const mapStateToProps = state => {
     return state;
   };
 
-export default connect(mapStateToProps,{ restoreToken,DROPuserINFOANDEMAIl  })(main);
+export default connect(mapStateToProps,{ restoreToken,DROPuserINFOANDEMAIl,ADDuserINFO,ADDuserADRESSE  })(main);
 
 
 
