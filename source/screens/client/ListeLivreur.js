@@ -110,6 +110,7 @@ class  ListeLivreur extends React.Component {
           count:0
         }
         this.colisDropInfo=this.colisDropInfo.bind(this);
+        this.addUserSelect=this.addUserSelect.bind(this);
     }
 
     componentDidMount(){
@@ -208,6 +209,12 @@ class  ListeLivreur extends React.Component {
       this.props.dropColisInfos();
     }
 
+    addUserSelect(user){
+       
+      this.props.addUserSelect(user);
+
+    }
+
     render(){
      console.log('listConnected:',this.state.listConnected);
        
@@ -236,11 +243,14 @@ class  ListeLivreur extends React.Component {
                     <FlatList
                       data={this.state.listConnected}
                       renderItem={({ item, index, separators })=>(
-                        <View style={{flexDirection:'row',borderWidth:1,borderColor:'#63ff9e',backgroundColor:'#63ff9e',marginBottom:5}}>
+                        <TouchableOpacity 
+                        style={{flexDirection:'row',borderWidth:1,borderColor:'#63ff9e',backgroundColor:'#63ff9e',marginBottom:5}}
+                        onPress={()=>{this.addUserSelect(item)}}
+                        >
                             <View style={{padding:20}}><Text >•</Text></View> 
                             <View style={{padding:20}}><Text >{item.email}</Text></View> 
                             
-                        </View>
+                        </TouchableOpacity>
                         )}
                       keyExtractor={(item) => item.id.toString()}
                     

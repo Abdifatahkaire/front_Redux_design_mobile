@@ -8,6 +8,9 @@ import jwtDecode from 'jwt-decode';
 import { DROPuserINFOANDEMAIl } from "../../redux/actionUserInfo";
 import Pencil from "react-native-bootstrap-icons/icons/pencil";
 import Person from "react-native-bootstrap-icons/icons/person";
+import { addColisInfos,dropColisInfos } from '../../redux/actionColis';
+import { addUserSelect,dropUserSelect } from '../../redux/actionUserSelect';
+
 
 async function saveUserInfo(value) {
   await SecureStore.setItemAsync('userInfo', JSON.stringify(value));
@@ -50,6 +53,49 @@ async function save(value) {
   async function deleteValue() {
     await SecureStore.deleteItemAsync('userToken');
   }
+
+
+  async function saveColisInfos(value){
+    await SecureStore.setItemAsync('colisInfo', JSON.stringify(value));
+  }
+  
+  async function getColisInfos() {
+    let result = await SecureStore.getItemAsync('colisInfo');
+     
+    if(result){
+       return result;
+    }
+    else{
+        return null;
+    }
+  
+  }
+
+  async function deleteColisInfos() {
+    await SecureStore.deleteItemAsync('colisInfo');
+  }
+
+  
+  async function saveUserSelected(){
+    await SecureStore.setItemAsync('userSelected', JSON.stringify(value));
+  } 
+ 
+  async function getUserSelected() {
+    let result = await SecureStore.getItemAsync('userSelected');
+     
+    if(result){
+       return result;
+    }
+    else{
+        return null;
+    }
+  
+  }
+
+  async function deleteUserSelected() {
+    await SecureStore.deleteItemAsync('userSelected');
+  }
+
 
 
 class  ProfilClient extends React.Component {
@@ -97,6 +143,10 @@ class  ProfilClient extends React.Component {
       this.props.signOut();
        deleteValue();
        deleteUserInfo();
+       deleteColisInfos();
+       deleteUserSelected();
+       this.props.dropColisInfos();
+       this.props.dropUserSelect();
        this.props.User_Info.socket.disconnect();
     }
 
@@ -151,4 +201,4 @@ const mapStateToProps = state => {
     return state;
   };
 
-export default connect(mapStateToProps,{ signOut,restoreToken,DROPuserINFOANDEMAIl })(ProfilClient);
+export default connect(mapStateToProps,{ signOut,restoreToken,DROPuserINFOANDEMAIl,addColisInfos,dropColisInfos,addUserSelect,dropUserSelect })(ProfilClient);

@@ -138,6 +138,7 @@ class  Colis extends React.Component {
         }
 
         this.props.addColisInfos(colis);
+        saveColisInfos(colis);
 
       }
       else{
@@ -163,7 +164,7 @@ class  Colis extends React.Component {
                         <TextInput maxLength = {4} keyboardType="numeric" 
                         style={{borderWidth:1,marginBottom:10,paddingLeft:3,paddingTop:3,paddingBottom:3,borderRadius:4}} 
                         placeholder='le poids du colis' 
-                        value={this.state.poids}
+                        value={this.state.poids.toString()}
                         onChangeText={(text)=>this.setState({poids:text})}
                        />
                         

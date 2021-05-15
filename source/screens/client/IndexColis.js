@@ -108,20 +108,31 @@ class  IndexColis extends React.Component {
           
           count:0
         }
+        this.verifyColisInfo=this.verifyColisInfo.bind(this);
     }
 
     componentDidMount(){
        
       console.log('IndexColis');
    
+      this.verifyColisInfo();
       
-      
-
 
 
     }
 
-    
+    async verifyColisInfo(){
+
+
+      const colisInfos=await getColisInfos();
+      
+      
+      if(colisInfos!==null){
+        let colisInfoParse=JSON.parse(colisInfos);
+        this.props.addColisInfos(colisInfoParse);
+
+      }
+    }
    
     
 
