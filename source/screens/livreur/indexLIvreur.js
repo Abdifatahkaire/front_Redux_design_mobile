@@ -53,7 +53,7 @@ export default function  IndexLivreur(){
      
      >
         <Tabsbottom.Screen name="Map" component={Map} />
-        <Tabsbottom.Screen name="Notification"  component={Notification} options={{ tabBarBadge: 5 }}/>
+       
         <Tabsbottom.Screen name="Profile" component={Profil} />
       </Tabsbottom.Navigator>
      

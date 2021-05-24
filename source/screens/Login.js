@@ -10,6 +10,7 @@ import { ADDuserINFO,ADDuserADRESSE,DROPuserINFOANDEMAIl } from "../redux/action
 import axios from 'axios';
 import * as SecureStore from 'expo-secure-store';
 import jwtDecode from 'jwt-decode';
+import Connexion from "../../Connexion";
 
 
 async function saveUserInfo(value) {
@@ -154,7 +155,8 @@ class Login extends React.Component {
         if (reg.test(this.state.email) === false) {
             Alert.alert("ceci n'est un email adresse");
         }else{
-          axios.post('http://192.168.1.15:4000/api/auth/signin',{email:this.state.email,mot_de_passe:this.state.mot_de_passe})
+          console.log(' test:',this.state.email,this.state.mot_de_passe);
+          axios.post(Connexion.adresse+'/api/auth/signin',{email:this.state.email,mot_de_passe:this.state.mot_de_passe})
         .then(response=>{
        
           if(response.data.accessToken===undefined){
@@ -170,7 +172,8 @@ class Login extends React.Component {
 
             
              
-            this.props.User_Info.socket.auth={ email: response.data.email };
+            this.props.User_Info.socket.auth={ email: response.data.email,type: response.data.type };
+            
             this.props.User_Info.socket.connect(); 
 
             this.props.User_Info.socket.on('session',(data) => {
@@ -186,6 +189,7 @@ class Login extends React.Component {
               this.props.User_Info.socket.userID=data.userID;
                 this.props.ADDuserINFO(userINFO);
                 saveUserInfo(userINFO);
+                console.log('session login.js');
             });
 
 

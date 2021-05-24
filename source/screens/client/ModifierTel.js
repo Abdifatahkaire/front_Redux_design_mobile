@@ -1,11 +1,14 @@
 import React from "react";
-import { StyleSheet, Text,TextInput, View,Button,Image,TouchableOpacity } from 'react-native';
+import { StyleSheet, Text,TextInput, View,Alert,Button,Image,TouchableOpacity } from 'react-native';
 import {connect} from "react-redux";
 import { signOut,restoreToken   } from "../../redux/action";
 import axios from 'axios';
 import * as SecureStore from 'expo-secure-store';
 import jwtDecode from 'jwt-decode';
 import { DROPuserINFOANDEMAIl } from "../../redux/actionUserInfo";
+import { ModifierNumeroTel,ModifierVotreNom   } from "../../redux/actionUserInfo";
+import Connexion from "../../../Connexion";
+
 
 
 async function saveUserInfo(value) {
@@ -55,8 +58,12 @@ class  ModifierTel extends React.Component {
   
     constructor(props){
         super(props);
-        this.SignOut=this.SignOut.bind(this);
+        this.ModifierVotreTElfunction=this.ModifierVotreTElfunction.bind(this);
         this.VerifyTokenValud=this.VerifyTokenValud.bind(this);
+        this.state={
+            telModify:'',
+            email:this.props.User_Info.emailUser
+        }
     }
 
     componentDidMount(){
@@ -92,24 +99,40 @@ class  ModifierTel extends React.Component {
       }
      }
    
-    SignOut(){
-      this.props.signOut();
-       deleteValue();
-       deleteUserInfo();
+    ModifierVotreTElfunction(){
+
+      if(this.state.nomModify!==''){
+        axios.post(Connexion.adresse+'/api/NumeroTelUserConnected',{tel:this.state.telModify ,email:this.state.email})
+        .then(response=>{
+           if(response.data.user!==undefined){
+            Alert.alert('vous avez modifier votre tel');
+            this.props.ModifierNumeroTel(this.state.telModify);
+           }
+        })
+        
+       }
+      
+
+
     }
 
     render(){
      
-       
+      console.log('ModifierTel.js:',this.state.email);
         return(
                 
                 <View style={{marginTop:30,backgroundColor:'#ECF0F1'}}>
                 
-                <TextInput placeholder='Modifier Votre Nom' />
+                <TextInput
+                 value={this.state.telModify}
+                 onChangeText={(text)=>{this.setState({telModify:text})}}
+                 style={{marginTop:20,marginBottom:20,borderWidth:1,borderRadius:4,paddingLeft:10,paddingTop:5,paddingBottom:5}} keyboardType="numeric" placeholder='Modifier Votre Numero de tel:' />
                 <TouchableOpacity
-                 style={{backgroundColor:'#5D6D7E'}}
+                 style={{backgroundColor:'#63ff9e',flexDirection:'row',alignItems:'center',justifyContent:'center',padding:10}}
+                 onPress={()=>{this.ModifierVotreTElfunction()}}
                 >
-                <Text style={{fontSize:20}}>Modifier</Text>
+                <Text style={{fontSize:20}}>Modifier votre Numero tel</Text>
+                
                 </TouchableOpacity>
             </View>
                 
@@ -124,4 +147,4 @@ const mapStateToProps = state => {
     return state;
   };
 
-export default connect(mapStateToProps,{ signOut,restoreToken,DROPuserINFOANDEMAIl })(ModifierTel);
+export default connect(mapStateToProps,{ signOut,restoreToken,DROPuserINFOANDEMAIl,ModifierVotreNom,ModifierNumeroTel })(ModifierTel);

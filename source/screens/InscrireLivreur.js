@@ -6,6 +6,7 @@ import moto from '../Image/moto_livreur_inscrire.png';
 import {connect} from "react-redux";
 import { signIn  } from "../redux/action";
 import axios from 'axios';
+import Connexion from "../../Connexion";
 
  
  class  InscrireLivreur extends React.Component {
@@ -88,7 +89,7 @@ import axios from 'axios';
                 console.log(this.state.mot_de_passe);
                 console.log(this.state.c_mot_de_passe);
                 console.log(this.state.type);
-                axios.post('http://192.168.1.15:4000/api/auth/signup',{nom:this.state.nom,tel:this.state.tel,email:this.state.email,type:this.state.type,mot_de_passe:this.state.mot_de_passe})
+                axios.post(Connexion.adresse+'/api/auth/signup',{nom:this.state.nom,tel:this.state.tel,email:this.state.email,type:this.state.type,mot_de_passe:this.state.mot_de_passe})
                 .then(response=>{
                     
                     if(response.data.messageSuccess===undefined){

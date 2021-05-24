@@ -7,6 +7,7 @@ import * as SecureStore from 'expo-secure-store';
 import jwtDecode from 'jwt-decode';
 import { DROPuserINFOANDEMAIl } from "../../redux/actionUserInfo";
 import MapView from 'react-native-maps';
+import ImagePersonne from '../../Image/Profil_ills1_gray.png';
 
 async function saveUserInfo(value) {
   await SecureStore.setItemAsync('userInfo', JSON.stringify(value));
@@ -143,19 +144,76 @@ class  MapClient extends React.Component {
      
        
         return(
-          <View style={styles.container}>
-          <MapView style={styles.map} />
-        </View>
+          <View style={styles.wrapper}>
+
+            <View style={styles.back}>
+                <MapView region={{
+                        latitude: 36.89002125197227,
+                        longitude: 9.939537048339846,
+                        latitudeDelta: 0.01,
+                        longitudeDelta: 0.01,
+                      }}
+                    style={styles.map} 
+                />
+            </View>
+
+            <View style={styles.front}>
+                <View  style={{flex:1,flexDirection:'row',justifyContent:'center'}}>
+                   <View style={{flexDirection:'row'}}>
+                     
+                     <View style={{justifyContent:'center',marginLeft:10,marginRight:10}}>
+                       <View style={{borderColor:'gray',borderWidth:1,padding:8,borderRadius:40}}><Image source={ImagePersonne} /></View>
+                     </View>
+                     
+                     <View>
+                       <Text style={{color:'black',fontWeight:'bold'}}>Nom:</Text>
+                       <Text>abdifatah</Text>
+                     </View>
+                   </View>
+                   
+                </View>
+                <View  style={{flex:1,flexDirection:'row'}}>
+                   
+                   <View style={{flex:1}}>
+                      <Text style={{fontWeight:'bold'}}>Etat demande de livraison:</Text>
+                      <Text>en cours ...</Text>
+                   </View>
+
+                   <View  style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+                     <View style={{paddingTop:7,paddingBottom:7,paddingLeft:20,paddingRight:20,backgroundColor:'#63ff9e',borderRadius:4}}><Text>annuler</Text></View>
+                     
+                   </View>
+                       
+                </View>
+                 
+    
+            </View>
+          
+                
+           
+         
+      </View>
+         
            );
     }
 }
 
 const styles = StyleSheet.create({
-  container: {
+  wrapper: {
+    
+    width: "100%",
     height:'100%',
-    backgroundColor: '#fff',
+    borderWidth:1,
+    borderColor:'green'
+},
+  back: {
+    width: "100%",
+    height:'100%',
+    backgroundColor: 'blue',
+    zIndex: 0,
     alignItems: 'center',
     justifyContent: 'center',
+    borderWidth:1
     
     
   },
@@ -163,6 +221,19 @@ const styles = StyleSheet.create({
     width: Dimensions.get('window').width,
     height: Dimensions.get('window').height,
   },
+  front:{
+    position: 'absolute',
+    bottom:5,
+    left:0,
+    width: '100%',
+    height:100,
+    backgroundColor: 'white',
+    zIndex: 1,
+    borderWidth:1,
+    borderColor:'gray',
+    borderRadius:10,
+    flex:1
+  }
 });
 
 const mapStateToProps = state => {

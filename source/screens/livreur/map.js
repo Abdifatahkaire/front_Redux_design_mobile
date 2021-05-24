@@ -61,16 +61,28 @@ class  MapLivreur extends React.Component {
 
     componentDidMount(){
        
-      console.log('Home');
+      console.log('Livreur map');
+      this.props.User_Info.socket.on("userDemande",(data) => {
+
+        
+          console.log('user demande livraison infos:',data.user);
+          
+     });
+      
+
+     
    
-      this.VerifyTokenValud();
-      getValueFor().then(x=>{console.log(x)});
-      getUserInfo().then(x=>{console.log(x)});
+     
+    
     }
 
     async VerifyTokenValud() {
+
+
+
       let token = await getValueFor();
       
+
       if(token!==null){
          if (jwtDecode(token).exp < Date.now() / 1000) {
            deleteValue();
@@ -90,6 +102,10 @@ class  MapLivreur extends React.Component {
        console.log(token);
       
       }
+
+
+
+
      }
    
     

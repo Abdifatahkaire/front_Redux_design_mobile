@@ -12,6 +12,7 @@ import { addColisInfos,dropColisInfos } from '../../redux/actionColis';
 import { addUserSelect,dropUserSelect } from '../../redux/actionUserSelect';
 
 import ClearColis from "react-native-bootstrap-icons/icons/x";
+import Connexion from "../../../Connexion";
 
 async function saveUserInfo(value) {
     await SecureStore.setItemAsync('userInfo', JSON.stringify(value));
@@ -126,7 +127,8 @@ class  ListeLivreur extends React.Component {
           id:this.state.count,
           ID_USER: data.user.ID_USER,
           email: data.user.email,
-          connected: data.user.connected
+          connected: data.user.connected,
+          type: data.user.type
          }
            this.setState({listConnected:[...this.state.listConnected,newUser]})
            this.setState({count:this.state.count+1});
@@ -139,7 +141,7 @@ class  ListeLivreur extends React.Component {
       });
 
 
-      axios.get('http://192.168.1.15:4000/api/allusersconnected')
+      axios.get(Connexion.adresse+'/api/allusersconnected')
       .then(response=>{
         if(response.data.users!==undefined){
             
@@ -148,13 +150,14 @@ class  ListeLivreur extends React.Component {
             for(let i=0;i<response.data.users.length;i++){
               
               
-              if(response.data.users[i].ID_USER!==this.props.User_Info.socket.userID && response.data.users[i].connected!==0){
+              if(response.data.users[i].ID_USER!==this.props.User_Info.socket.userID && response.data.users[i].connected!==0 && response.data.users[i].type==='livreur'){
                 
                 const newUser={
                   id:this.state.count,
                   ID_USER: response.data.users[i].ID_USER,
                   email: response.data.users[i].email,
-                  connected:response.data.users[i].connected
+                  connected:response.data.users[i].connected,
+                  type:response.data.users[i].type
                  }
                    this.setState({listConnected:[...this.state.listConnected,newUser]})
                    this.setState({count:this.state.count+1});
@@ -211,7 +214,20 @@ class  ListeLivreur extends React.Component {
 
     addUserSelect(user){
        
+      
       this.props.addUserSelect(user);
+      
+      const userdemandeInfos={
+        nom:this.props.User_Info.nomUser,
+        tel:this.props.User_Info.telUser,
+        email:this.props.User_Info.emailUser
+        
+      }
+
+      this.props.User_Info.socket.to(user.ID_USER).emit("userDemande", {
+        user:userdemandeInfos
+       });
+
 
     }
 

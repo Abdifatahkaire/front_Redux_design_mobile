@@ -188,7 +188,13 @@ class  ProfilClient extends React.Component {
                 <Pencil width="30" height="30" fill="rgb(93, 109, 126)" />
                 </TouchableOpacity>
                
-                <Button title="Sign out" onPress={this.SignOut} />
+                <TouchableOpacity
+                 style={{backgroundColor:'#63ff9e',borderWidth:1,borderColor:'white',flexDirection:'row',alignItems:'center',justifyContent:'center',marginTop:20,padding:10}}
+                 onPress={()=>{this.SignOut()}}
+                >
+                  <Text style={{fontSize:20,color:'#34495E'}}>Deconnectez-vous</Text>
+                </TouchableOpacity>
+              
 
             </View>
            );

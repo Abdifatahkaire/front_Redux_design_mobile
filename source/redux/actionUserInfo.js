@@ -1,4 +1,4 @@
-import { ADD_User_INFO,ADD_ADRESSE_EMAIL,DROP_User_INFO } from './actionTYpesUserInfo';
+import { ADD_User_INFO,ADD_ADRESSE_EMAIL,DROP_User_INFO,MODIFY_NOM,MODIFY_TEL } from './actionTYpesUserInfo';
 
 
 export const ADDuserINFO = userInfo => ({
@@ -10,7 +10,26 @@ export const ADDuserINFO = userInfo => ({
     }
   
 });
-  
+
+export const ModifierVotreNom  = userNom => ({
+    type: MODIFY_NOM,
+    payload: {
+        userNom
+    }
+});
+
+
+
+
+export const ModifierNumeroTel = userTel => ({
+    type: MODIFY_TEL,
+    payload: {
+        userTel
+     }
+});
+
+
+
   export const ADDuserADRESSE = emailUser => ({
       type: ADD_ADRESSE_EMAIL,
       payload: {

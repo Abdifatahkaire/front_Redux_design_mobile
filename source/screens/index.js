@@ -25,10 +25,10 @@ class Index extends React.Component {
    }
 
     render(){
-
+      console.log('user infos index generale:',this.props.User_Info.typeUser);
         return(
             <View style={{marginTop:30,flex:1}}>
-                {this.props.User_Info.typeUser == 'livreur' ? (<IndexLivreur />) : (<IndexClient />)}
+                {this.props.User_Info.typeUser === 'livreur' ? (<IndexLivreur />) : (<IndexClient />)}
             </View>
           
         );

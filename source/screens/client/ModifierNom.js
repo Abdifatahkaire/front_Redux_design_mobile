@@ -1,11 +1,14 @@
 import React from "react";
-import { StyleSheet, Text,TextInput, View,Button,Image,TouchableOpacity } from 'react-native';
+import { StyleSheet, Text,TextInput,Alert, View,Button,Image,TouchableOpacity } from 'react-native';
 import {connect} from "react-redux";
 import { signOut,restoreToken   } from "../../redux/action";
 import axios from 'axios';
 import * as SecureStore from 'expo-secure-store';
 import jwtDecode from 'jwt-decode';
 import { DROPuserINFOANDEMAIl } from "../../redux/actionUserInfo";
+import { ModifierNumeroTel,ModifierVotreNom   } from "../../redux/actionUserInfo";
+import Connexion from "../../../Connexion";
+
 
 
 async function saveUserInfo(value) {
@@ -55,8 +58,12 @@ class  ModifierNom extends React.Component {
   
     constructor(props){
         super(props);
-        this.SignOut=this.SignOut.bind(this);
+        this.ModifierNomFunction=this.ModifierNomFunction.bind(this);
         this.VerifyTokenValud=this.VerifyTokenValud.bind(this);
+        this.state={
+          nomModify:'',
+          email:this.props.User_Info.emailUser
+      }
     }
 
     componentDidMount(){
@@ -92,23 +99,38 @@ class  ModifierNom extends React.Component {
       }
      }
    
-    SignOut(){
-      this.props.signOut();
-       deleteValue();
-       deleteUserInfo();
+    ModifierNomFunction(){
+
+      
+      if(this.state.nomModify!==''){
+        axios.post(Connexion.adresse+'/api/NomUserConnected',{nom:this.state.nomModify ,email:this.state.email})
+        .then(response=>{
+           if(response.data.user!==undefined){
+            Alert.alert('vous avez modifier votre nom');
+            this.props.ModifierVotreNom(this.state.nomModify);
+           }
+        })
+        
+       }
+
+
     }
 
     render(){
      
-       
+       console.log('ModifierNom.js:',this.state.email);
         return(
-            <View style={{marginTop:30,backgroundColor:'#ECF0F1'}}>
+            <View style={{marginTop:30}}>
                 
-                <TextInput placeholder='Modifier Votre Nom' />
+                <TextInput 
+                  value={this.state.nomModify}
+                  onChangeText={(text)=>{this.setState({nomModify:text})}}
+                  style={{marginTop:20,marginBottom:20,borderWidth:1,borderRadius:4,paddingLeft:10,paddingTop:5,paddingBottom:5}} placeholder='Modifier Votre Nom' />
                 <TouchableOpacity
-                 style={{backgroundColor:'#ECF0F1'}}
+                 style={{backgroundColor:'#63ff9e',flexDirection:'row',alignItems:'center',justifyContent:'center',padding:10}}
+                 onPress={()=>{this.ModifierNomFunction()}}
                 >
-                <Text style={{fontSize:20}}>Modifier</Text>
+                <Text style={{fontSize:20}}>Modifier votre Nom</Text>
                 
                 </TouchableOpacity>
             </View>
@@ -122,4 +144,4 @@ const mapStateToProps = state => {
     return state;
   };
 
-export default connect(mapStateToProps,{ signOut,restoreToken,DROPuserINFOANDEMAIl })(ModifierNom);
+export default connect(mapStateToProps,{ signOut,restoreToken,DROPuserINFOANDEMAIl,ModifierNumeroTel,ModifierVotreNom  })(ModifierNom);

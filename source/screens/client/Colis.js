@@ -105,6 +105,7 @@ class  Colis extends React.Component {
           adresse:'',
         }
        this.colisInfos=this.colisInfos.bind(this);
+       this.handleChangeOption=this.handleChangeOption.bind(this);
     }
 
     componentDidMount(){
@@ -149,6 +150,13 @@ class  Colis extends React.Component {
 
 
     }
+
+    handleChangeOption(val) {
+      if (val !== 'please') {
+        this.setState({nature:val})
+        console.log('handleChangeOption:',val);
+      }
+    }
    
     
 
@@ -160,10 +168,10 @@ class  Colis extends React.Component {
               
                  <View  style={{flexDirection:'row',justifyContent:'center'}}>
                        <View style={{width:250}}>
-                       <Text style={{marginBottom:5}}>Poids:</Text>
+                       <Text style={{marginBottom:5}} >Poids en kg:</Text>
                         <TextInput maxLength = {4} keyboardType="numeric" 
                         style={{borderWidth:1,marginBottom:10,paddingLeft:3,paddingTop:3,paddingBottom:3,borderRadius:4}} 
-                        placeholder='le poids du colis' 
+                         
                         value={this.state.poids.toString()}
                         onChangeText={(text)=>this.setState({poids:text})}
                        />
@@ -172,8 +180,9 @@ class  Colis extends React.Component {
                         <Picker
                             selectedValue={this.state.nature}
                             style={{borderWidth:1,marginBottom:5}}
-                            onValueChange={(itemValue, itemIndex) => this.setState({nature:itemValue})}    
+                            onValueChange={(itemValue, itemIndex) => this.handleChangeOption(itemValue)}    
                         >
+                                    <Picker.Item label="Please select" value="please" />
                                     <Picker.Item label="Pizza" value="Pizza" />
                                     <Picker.Item label="autre" value="autre" />
                                     
