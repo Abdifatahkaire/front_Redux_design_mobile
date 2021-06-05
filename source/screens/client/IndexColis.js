@@ -138,7 +138,7 @@ class  IndexColis extends React.Component {
 
     render(){
      
-       console.log(this.props.Colis_Infos.colisInfos);
+      
         return(
              
             <View>

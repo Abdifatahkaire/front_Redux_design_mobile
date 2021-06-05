@@ -18,6 +18,7 @@ import ImageProfilgreen from '../../Image/Profil_ills1.png';
 import Map from './map';
 import Profil from './profil';
 import Notification from './notification';
+import Indexpages from './indexpages';
 
 const Tabsbottom = createBottomTabNavigator();
 
@@ -30,14 +31,12 @@ export default function  IndexLivreur(){
       tabBarIcon: ({ focused, color, size }) => {
         let iconName;
 
-        if (route.name === 'Map') {
+        if (route.name === 'Indexpages') {
           iconName = focused ? <Image source={ImageMapgreen} /> : <Image source={ImageMapgray} /> ;
         } else if (route.name === 'Profile') {
           iconName = focused ? <Image source={ImageProfilgreen} /> : <Image source={ImageProfilgray} />;
         }
-        else if(route.name === 'Notification'){
-          iconName = focused ? <Image source={ImageNotificationgreen} /> : <Image source={ImageNotificationgray} />;
-        }
+       
 
         // You can return any component that you like here!
         return iconName;
@@ -52,8 +51,7 @@ export default function  IndexLivreur(){
     
      
      >
-        <Tabsbottom.Screen name="Map" component={Map} />
-       
+        <Tabsbottom.Screen name="Indexpages" component={Indexpages} />
         <Tabsbottom.Screen name="Profile" component={Profil} />
       </Tabsbottom.Navigator>
      

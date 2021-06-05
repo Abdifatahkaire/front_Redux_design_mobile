@@ -105,7 +105,7 @@ class  ListeLivreur extends React.Component {
     constructor(props){
         super(props);
         
-        this.VerifyTokenValud=this.VerifyTokenValud.bind(this);
+        
         this.state={
           listConnected:[],
           count:0
@@ -118,7 +118,7 @@ class  ListeLivreur extends React.Component {
        
       console.log('ListeLivreur');
    
-      this.VerifyTokenValud();
+      
       getValueFor().then(x=>{console.log(x)});
       getUserInfo().then(x=>{console.log(x)});
       this.props.User_Info.socket.on('userConnected',(data) => {
@@ -184,29 +184,6 @@ class  ListeLivreur extends React.Component {
 
     }
 
-    async VerifyTokenValud() {
-      let token = await getValueFor();
-      
-      if(token!==null){
-         if (jwtDecode(token).exp < Date.now() / 1000) {
-           deleteValue();
-           deleteUserInfo();
-           console.log('token exist mais not valide');
-           console.log(token);
-          
-           this.props.restoreToken(null);
-           this.props.DROPuserINFOANDEMAIl();
-         }else{
-           console.log('token exist mais valide');
-           this.props.restoreToken(token);
-           
-         }
-      }
-      else{
-       console.log(token);
-      
-      }
-     }
    
     colisDropInfo(){
       this.props.dropColisInfos();
@@ -215,20 +192,23 @@ class  ListeLivreur extends React.Component {
     addUserSelect(user){
        
       
-      this.props.addUserSelect(user);
+      
       
       const userdemandeInfos={
+        colisInfos:this.props.Colis_Infos.colisInfos,
+        email:this.props.User_Info.emailUser,
         nom:this.props.User_Info.nomUser,
-        tel:this.props.User_Info.telUser,
-        email:this.props.User_Info.emailUser
-        
+        to:user
       }
+      
 
-      this.props.User_Info.socket.to(user.ID_USER).emit("userDemande", {
-        user:userdemandeInfos
+      
+
+      this.props.User_Info.socket.emit("private message", {
+        userInfo:userdemandeInfos
        });
 
-
+       this.props.addUserSelect(user);
     }
 
     render(){
