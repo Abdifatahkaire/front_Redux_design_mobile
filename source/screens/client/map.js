@@ -73,7 +73,7 @@ async function save(value) {
     await SecureStore.deleteItemAsync('colisInfo');
   }
 
-  async function saveUserSelected(){
+  async function saveUserSelected(value){
     await SecureStore.setItemAsync('userSelected', JSON.stringify(value));
   } 
  
@@ -94,55 +94,62 @@ async function save(value) {
   }
 
 
+  async function saveEtatConfirm(value){
+    await SecureStore.setItemAsync('etat', JSON.stringify(value));
+  } 
+ 
+  async function getEtatConfirm(){
+    let result = await SecureStore.getItemAsync('etat');
+     
+    if(result){
+       return result;
+    }
+    else{
+        return null;
+    }
+  
+  }
+
+  async function deleteEtatConfirm() {
+    await SecureStore.deleteItemAsync('etat');
+  }
+
+
 
 class  MapClient extends React.Component {
   
     constructor(props){
         super(props);
         
-        this.VerifyTokenValud=this.VerifyTokenValud.bind(this);
+        this.state={
+          etat:0
+        }
+        this.functionEtatComfirm=this.functionEtatComfirm.bind(this);
     }
 
     componentDidMount(){
        
-      console.log('Home');
+      console.log('MapClient');
    
-      this.VerifyTokenValud();
-      getValueFor().then(x=>{console.log(x)});
-      getUserInfo().then(x=>{console.log(x)});
+      
+      this.functionEtatComfirm();
+
     }
 
-    async VerifyTokenValud() {
-      let token = await getValueFor();
-      
-      if(token!==null){
-         if (jwtDecode(token).exp < Date.now() / 1000) {
-           deleteValue();
-           deleteUserInfo();
-           console.log('token exist mais not valide');
-           console.log(token);
-          
-           this.props.restoreToken(null);
-           this.props.DROPuserINFOANDEMAIl();
-         }else{
+    
+      async functionEtatComfirm(){
 
-          
-           console.log('token exist mais valide');
-           this.props.restoreToken(token);
-           
-         }
+        const etatconfirm=await getEtatConfirm();
+        let etatC=JSON.parse(etatconfirm);
+        this.setState({etat:etatC});
+  
+        console.log('etatC',etatC);
       }
-      else{
-       console.log(token);
-      
-      }
-     }
-   
     
 
     render(){
      
-       
+       console.log('Statetat sur MapCliente',this.state.etat);
         return(
           <View style={styles.wrapper}>
 
@@ -176,13 +183,16 @@ class  MapClient extends React.Component {
                    
                    <View style={{flex:1}}>
                       <Text style={{fontWeight:'bold'}}>Etat demande de livraison:</Text>
-                      <Text>en cours ...</Text>
+                      <Text>en cours d'attends ...</Text>
                    </View>
 
-                   <View  style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+                   <TouchableOpacity  
+                    style={{flex:1,justifyContent:'center',alignItems:'center'}}
+                    
+                   >
                      <View style={{paddingTop:7,paddingBottom:7,paddingLeft:20,paddingRight:20,backgroundColor:'#63ff9e',borderRadius:4}}><Text>annuler</Text></View>
                      
-                   </View>
+                   </TouchableOpacity>
                        
                 </View>
                  

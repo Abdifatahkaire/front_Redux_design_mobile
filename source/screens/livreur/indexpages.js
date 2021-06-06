@@ -12,7 +12,7 @@ import Notification from './notification';
 
 
 
-async function saveUserSelected(){
+async function saveUserSelected(value){
     await SecureStore.setItemAsync('userSelected', JSON.stringify(value));
 } 
  
@@ -68,7 +68,9 @@ class  Indexpages extends React.Component {
       
       
       if(userSelected!==null){
+
         let userSelectedParse=JSON.parse(userSelected);
+        console.log('userSelect exit indexpages:',userSelectedParse);
         this.props.addUserSelect(userSelectedParse);
       }
       

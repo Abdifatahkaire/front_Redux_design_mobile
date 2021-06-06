@@ -6,7 +6,7 @@ import axios from 'axios';
 import * as SecureStore from 'expo-secure-store';
 import jwtDecode from 'jwt-decode';
 import { DROPuserINFOANDEMAIl } from "../../redux/actionUserInfo";
-
+import { addUserSelect,dropUserSelect } from '../../redux/actionUserSelect';
 import { addColisInfos,dropColisInfos } from '../../redux/actionColis';
 import Connexion from "../../../Connexion";
 
@@ -52,6 +52,26 @@ async function save(value) {
     await SecureStore.deleteItemAsync('userToken');
   }
 
+  async function saveUserSelected(value){
+    await SecureStore.setItemAsync('userSelected', JSON.stringify(value));
+  } 
+ 
+  async function getUserSelected() {
+    let result = await SecureStore.getItemAsync('userSelected');
+     
+    if(result){
+       return result;
+    }
+    else{
+        return null;
+    }
+  
+  }
+
+  async function deleteUserSelected() {
+    await SecureStore.deleteItemAsync('userSelected');
+  }
+
 
 class  Notifications extends React.Component {
   
@@ -61,7 +81,8 @@ class  Notifications extends React.Component {
           listDemande:[],
           count:0
         }
-        
+        this.RefuserDemandeLivraison=this.RefuserDemandeLivraison.bind(this);
+        this.AccepterDemandeLivraison=this.AccepterDemandeLivraison.bind(this);
     }
 
     componentDidMount(){
@@ -77,7 +98,10 @@ class  Notifications extends React.Component {
           nature:data.info.colisInfos.user.nature,
           etat:0,
           nom:data.info.nom,
-          tokens:data.tokenInfo
+          tokens:data.tokenInfo,
+          socketId_P:data.socketUserId,
+          socketId_A:this.props.User_Info.socket.userID
+          
         };
 
         
@@ -98,7 +122,9 @@ class  Notifications extends React.Component {
               nature:data.info.colisInfos.user.nature,
               etat:0,
               nom:data.info.nom,
-              tokens:data.tokenInfo
+              tokens:data.tokenInfo,
+              socketId_P:data.socketUserId,
+              socketId_A:this.props.User_Info.socket.userID
             };
 
 
@@ -130,6 +156,8 @@ class  Notifications extends React.Component {
                 etat:response.data.users[i].etat,
                 nom:response.data.users[i].nom,
                 tokens:response.data.users[i].token,
+                socketId_P:response.data.users[i].socketId_P,
+                socketId_A:response.data.users[i].socketId_A
                 }
                   this.setState({listDemande:[...this.state.listDemande,newColisaffichers]});
                   this.setState({count:this.state.count+1});
@@ -164,6 +192,33 @@ class  Notifications extends React.Component {
     }
 
     
+    RefuserDemandeLivraison(item){
+      
+      const id=item.id;
+      console.log('refuser demande livraison id:',id);
+      console.log('refuser item:',item);
+      this.setState({listDemande:this.state.listDemande.filter((item, index)=>item.id!==id)});
+
+      this.props.User_Info.socket.emit("private Refuser", {
+        userInfo:item
+       });
+
+    }
+
+    AccepterDemandeLivraison(item){
+        
+      
+
+      console.log('accepter item:',item);
+       
+      
+      
+       this.props.User_Info.socket.emit("private Accepter", {
+        userInfo:item
+       });
+       saveUserSelected(item);
+       this.props.addUserSelect(item);
+    }
    
     
 
@@ -179,11 +234,25 @@ class  Notifications extends React.Component {
                       renderItem={({ item, index, separators })=>(
                         <View>
                           {jwtDecode(item.tokens).exp < Date.now() / 1000 ? <View><Text>demande spirer</Text></View> : <TouchableOpacity 
-                        style={{flexDirection:'row',borderWidth:1,borderColor:'#63ff9e',backgroundColor:'#63ff9e',marginBottom:5}}
+                        style={{flexDirection:'row',borderWidth:1,borderColor:'#63ff9e',backgroundColor:'#63ff9e',marginBottom:5,alignItems:'center',padding:20}}
                         
                         >
-                            <View style={{padding:20}}><Text >•</Text></View> 
-                            <View style={{padding:20}}><Text >{item.nom}</Text></View> 
+                            <View style={{marginRight:15}}><Text >•</Text></View> 
+                            <View style={{marginRight:15}}><Text >{item.nom}</Text></View>
+                            
+                            <TouchableOpacity 
+                             style={{marginRight:15,padding:5,backgroundColor:'white',borderWidth:1,borderColor:'white',borderRadius:4}}
+                             onPress={()=>{this.AccepterDemandeLivraison(item)}}
+                            >
+                              <Text >Accepter</Text>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity 
+                             style={{padding:5,backgroundColor:'white',borderWidth:1,borderColor:'white',borderRadius:4}}
+                             onPress={()=>{this.RefuserDemandeLivraison(item)}}
+                            >
+                              <Text >Refuser</Text>
+                            </TouchableOpacity> 
                             
                         </TouchableOpacity>}
                         </View>
@@ -206,4 +275,4 @@ const mapStateToProps = state => {
     return state;
   };
 
-export default connect(mapStateToProps,{ signOut,restoreToken,DROPuserINFOANDEMAIl,addColisInfos,dropColisInfos })(Notifications);
+export default connect(mapStateToProps,{ signOut,restoreToken,DROPuserINFOANDEMAIl,addColisInfos,dropColisInfos,addUserSelect,dropUserSelect })(Notifications);

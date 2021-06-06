@@ -50,6 +50,46 @@ async function save(value) {
     await SecureStore.deleteItemAsync('userToken');
   }
 
+  async function saveEtatConfirm(value){
+    await SecureStore.setItemAsync('etat', JSON.stringify(value));
+  } 
+ 
+  async function getEtatConfirm(){
+    let result = await SecureStore.getItemAsync('etat');
+     
+    if(result){
+       return result;
+    }
+    else{
+        return null;
+    }
+  
+  }
+
+  async function deleteEtatConfirm() {
+    await SecureStore.deleteItemAsync('etat');
+  }
+
+
+  async function saveUserSelected(value){
+    await SecureStore.setItemAsync('userSelected', JSON.stringify(value));
+  } 
+ 
+  async function getUserSelected() {
+    let result = await SecureStore.getItemAsync('userSelected');
+     
+    if(result){
+       return result;
+    }
+    else{
+        return null;
+    }
+  
+  }
+
+  async function deleteUserSelected() {
+    await SecureStore.deleteItemAsync('userSelected');
+  }
 
 class  ProfilLivreur extends React.Component {
   
@@ -93,10 +133,13 @@ class  ProfilLivreur extends React.Component {
      }
    
      SignOut(){
-      this.props.signOut();
+      
        deleteValue();
        deleteUserInfo();
+       deleteEtatConfirm();
+       deleteUserSelected();
        this.props.User_Info.socket.disconnect();
+       this.props.signOut();
     }
 
     render(){

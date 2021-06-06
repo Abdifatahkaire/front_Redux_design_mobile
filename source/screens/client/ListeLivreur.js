@@ -77,7 +77,7 @@ async function saveUserInfo(value) {
       await SecureStore.deleteItemAsync('colisInfo');
     }
 
-    async function saveUserSelected(){
+    async function saveUserSelected(value){
       await SecureStore.setItemAsync('userSelected', JSON.stringify(value));
     } 
    
@@ -209,6 +209,7 @@ class  ListeLivreur extends React.Component {
        });
 
        this.props.addUserSelect(user);
+       saveUserSelected(user);
     }
 
     render(){
