@@ -8,6 +8,7 @@ import jwtDecode from 'jwt-decode';
 import { DROPuserINFOANDEMAIl } from "../../redux/actionUserInfo";
 import MapView from 'react-native-maps';
 import ImagePersonne from '../../Image/Profil_ills1_gray.png';
+import Connexion from "../../../Connexion";
 
 async function saveUserInfo(value) {
   await SecureStore.setItemAsync('userInfo', JSON.stringify(value));
@@ -100,42 +101,38 @@ class  MapLivreur extends React.Component {
     constructor(props){
         super(props);
         
-        this.VerifyTokenValud=this.VerifyTokenValud.bind(this);
+        this.state={
+           nom:'nom'
+        }
+       this.functionRecupereNom=this.functionRecupereNom.bind(this);
     }
 
     componentDidMount(){
        
-      console.log('Home');
+      console.log('MAp livreur');
    
-      this.VerifyTokenValud();
-      getValueFor().then(x=>{console.log(x)});
-      getUserInfo().then(x=>{console.log(x)});
+      this.functionRecupereNom();
     }
 
-    async VerifyTokenValud() {
-      let token = await getValueFor();
-      
-      if(token!==null){
-         if (jwtDecode(token).exp < Date.now() / 1000) {
-           deleteValue();
-           deleteUserInfo();
-           console.log('token exist mais not valide');
-           console.log(token);
-          
-           this.props.restoreToken(null);
-           this.props.DROPuserINFOANDEMAIl();
-         }else{
+    functionRecupereNom(){
+    
+      const email=this.props.UserSelect.userSelect.user.emailP;
+      console.log('email map livreur',email);
+       axios.post(Connexion.adresse+'/api/accepterNomUser',{email:email})
+     .then(response=>{
+       if(response.data.users!==undefined){
+         const nom=response.data.users[0].nom;
+         console.log('response data users',response.data.users[0],' nom:',nom);
+          this.setState({nom:nom});
+       }
+       else{
+         console.log('erreur livreur map response data');
+       }
 
-          
-           console.log('token exist mais valide');
-           this.props.restoreToken(token);
-           
-         }
-      }
-      else{
-       console.log(token);
-      
-      }
+       
+     })
+
+
      }
    
     
@@ -167,7 +164,7 @@ class  MapLivreur extends React.Component {
                      
                      <View>
                        <Text style={{color:'black',fontWeight:'bold'}}>Nom:</Text>
-                       <Text>abdifatah</Text>
+                       <Text>{this.state.nom}</Text>
                      </View>
                    </View>
                    

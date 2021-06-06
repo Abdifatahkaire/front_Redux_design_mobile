@@ -227,7 +227,7 @@ class  Notifications extends React.Component {
        
         return(
             <View style={{marginTop:30}}>
-                 {this.state.listDemande.length === 0 ? <View><Text>Aucun colis demander</Text></View> : <View style={{marginTop:50}}>
+                 {this.state.listDemande.length === 0 ? <View><Text>Aucun colis demander</Text></View> : <View style={{marginTop:20}}>
                    
                  <FlatList
                       data={this.state.listDemande}

@@ -8,6 +8,7 @@ import jwtDecode from 'jwt-decode';
 import { DROPuserINFOANDEMAIl } from "../../redux/actionUserInfo";
 import MapView from 'react-native-maps';
 import ImagePersonne from '../../Image/Profil_ills1_gray.png';
+import Connexion from "../../../Connexion";
 
 async function saveUserInfo(value) {
   await SecureStore.setItemAsync('userInfo', JSON.stringify(value));
@@ -122,20 +123,55 @@ class  MapClient extends React.Component {
         super(props);
         
         this.state={
-          etat:0
+          etat:null,
+          nom:'nom'
         }
         this.functionEtatComfirm=this.functionEtatComfirm.bind(this);
+        this.functionRecupereNom=this.functionRecupereNom.bind(this);
     }
 
     componentDidMount(){
        
       console.log('MapClient');
    
+      this.props.User_Info.socket.on('private accepteDemande',(data) => {
+                                                                                         
+        this.setState({etat:1}); 
+        saveEtatConfirm(1);
+        this.functionRecupereNom(); 
+      })
       
-      this.functionEtatComfirm();
+      this.props.User_Info.socket.on('private refuseDemande',(data) => {
+                                                                                
+        this.setState({etat:0});
+        saveEtatConfirm(0); 
+        this.functionRecupereNom();                                                                  
+      })
 
+      this.functionEtatComfirm();
+      this.functionRecupereNom();
     }
 
+     functionRecupereNom(){
+    
+      const email=this.props.UserSelect.userSelect.user.email;
+      console.log('email map cliente',email);
+       axios.post(Connexion.adresse+'/api/accepterNomUser',{email:email})
+     .then(response=>{
+       if(response.data.users!==undefined){
+         const nom=response.data.users[0].nom;
+         console.log('response data users',response.data.users[0],' nom:',nom);
+          this.setState({nom:nom});
+          
+       }
+       else{
+        console.log('erreur client map response data');
+       }
+       
+     })
+
+
+     }
     
       async functionEtatComfirm(){
 
@@ -143,13 +179,15 @@ class  MapClient extends React.Component {
         let etatC=JSON.parse(etatconfirm);
         this.setState({etat:etatC});
   
-        console.log('etatC',etatC);
+        
       }
     
 
     render(){
-     
-       console.log('Statetat sur MapCliente',this.state.etat);
+       
+      console.log('state sur MapCliente',this.state.etat);
+       console.log('UserSelect sur MapCliente',this.props.UserSelect.userSelect);
+       console.log('UserSelect email sur MapCliente',this.props.UserSelect.userSelect.user.email);
         return(
           <View style={styles.wrapper}>
 
@@ -174,7 +212,7 @@ class  MapClient extends React.Component {
                      
                      <View>
                        <Text style={{color:'black',fontWeight:'bold'}}>Nom:</Text>
-                       <Text>abdifatah</Text>
+                       <Text>{this.state.nom}</Text>
                      </View>
                    </View>
                    
