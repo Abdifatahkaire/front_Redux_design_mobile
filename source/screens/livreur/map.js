@@ -9,6 +9,7 @@ import { DROPuserINFOANDEMAIl } from "../../redux/actionUserInfo";
 import MapView from 'react-native-maps';
 import ImagePersonne from '../../Image/Profil_ills1_gray.png';
 import Connexion from "../../../Connexion";
+import { addUserSelect,dropUserSelect } from '../../redux/actionUserSelect';
 
 async function saveUserInfo(value) {
   await SecureStore.setItemAsync('userInfo', JSON.stringify(value));
@@ -105,6 +106,7 @@ class  MapLivreur extends React.Component {
            nom:'nom'
         }
        this.functionRecupereNom=this.functionRecupereNom.bind(this);
+       this.functionAnnulerDemandLivreur=this.functionAnnulerDemandLivreur.bind(this);
     }
 
     componentDidMount(){
@@ -133,6 +135,23 @@ class  MapLivreur extends React.Component {
      })
 
 
+     }
+
+     functionAnnulerDemandLivreur(){
+      
+      const item=this.props.UserSelect.userSelect.user;
+      this.props.User_Info.socket.emit("private AnnulerLivreur", {
+        userInfo:this.props.UserSelect.userSelect.user
+       });
+       axios.post(Connexion.adresse+'/api/SupprimerColisInfos',{emailA:this.props.UserSelect.userSelect.user.emailA})
+     .then(response=>{
+
+      if(response.data.users!==undefined){
+        console.log('colis supprimer');
+      }
+     })
+     this.props.dropUserSelect();
+        console.log('functionAnnulerDemandLivreur',this.props.UserSelect.userSelect.user);
      }
    
     
@@ -169,19 +188,21 @@ class  MapLivreur extends React.Component {
                    </View>
                    
                 </View>
-                <View  style={{flex:1,flexDirection:'row'}}>
-                   
-                   <View style={{flex:1}}>
+                <View style={{flex:1,flexDirection:'row'}}>
+                     <View style={{flex:1}}>
                       <Text style={{fontWeight:'bold'}}>Etat demande de livraison:</Text>
-                      <Text>en cours ...</Text>
+                      <Text>Accepter ...</Text>
                    </View>
-
-                   <View  style={{flex:1,justifyContent:'center',alignItems:'center'}}>
-                     <View style={{paddingTop:7,paddingBottom:7,paddingLeft:20,paddingRight:20,backgroundColor:'#63ff9e',borderRadius:4}}><Text>annuler</Text></View>
+                   <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+                   <TouchableOpacity 
+                    style={{paddingTop:7,paddingBottom:7,paddingLeft:20,paddingRight:20,backgroundColor:'#63ff9e',borderRadius:4}} 
+                    onPress={this.functionAnnulerDemandLivreur}
+                   >
+                     <Text>annuler</Text>
                      
-                   </View>
-                       
-                </View>
+                   </TouchableOpacity>
+                   </View>   
+                  </View>
                  
     
             </View>
@@ -238,4 +259,4 @@ const mapStateToProps = state => {
     return state;
   };
 
-export default connect(mapStateToProps,{ signOut,restoreToken,DROPuserINFOANDEMAIl })(MapLivreur);
+export default connect(mapStateToProps,{ signOut,restoreToken,DROPuserINFOANDEMAIl,addUserSelect,dropUserSelect })(MapLivreur);

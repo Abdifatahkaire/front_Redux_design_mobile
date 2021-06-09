@@ -17,6 +17,7 @@ import ImageProfilgreen from '../../Image/Profil_ills1.png';
 
 import Map from './map';
 import Profil from './profil';
+import MyStackProfil from './profilTabs';
 import Notification from './notification';
 import Indexpages from './indexpages';
 
@@ -52,7 +53,7 @@ export default function  IndexLivreur(){
      
      >
         <Tabsbottom.Screen name="Indexpages" component={Indexpages} />
-        <Tabsbottom.Screen name="Profile" component={Profil} />
+        <Tabsbottom.Screen name="Profile" component={MyStackProfil} />
       </Tabsbottom.Navigator>
      
     );

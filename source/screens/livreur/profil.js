@@ -6,7 +6,10 @@ import axios from 'axios';
 import * as SecureStore from 'expo-secure-store';
 import jwtDecode from 'jwt-decode';
 import { DROPuserINFOANDEMAIl } from "../../redux/actionUserInfo";
-
+import Pencil from "react-native-bootstrap-icons/icons/pencil";
+import Person from "react-native-bootstrap-icons/icons/person";
+import { addColisInfos,dropColisInfos } from '../../redux/actionColis';
+import { addUserSelect,dropUserSelect } from '../../redux/actionUserSelect';
 
 async function saveUserInfo(value) {
   await SecureStore.setItemAsync('userInfo', JSON.stringify(value));
@@ -146,12 +149,53 @@ class  ProfilLivreur extends React.Component {
      
        
         return(
-            <View style={{marginTop:30}}>
-                <Text> Profil  Livreur </Text>
-                <View>
-                <Button title="Sign out" onPress={this.SignOut} />
-                </View>
-            </View>
+           
+
+
+                  <View style={{flex:1,backgroundColor:'white',borderColor:'green',borderWidth:1}}>
+                                  
+                  <View style={{backgroundColor:'#ECF0F1',paddingTop:20,paddingBottom:20,justifyContent:'center',alignItems:'center',flexDirection:'row'}}>
+                    
+                    <View>
+                      <Person width="70" height="70" fill="rgb(93, 109, 126)" />
+                    </View>
+                    
+                    <View style={{paddingLeft:10,paddingRight:10,height:50,justifyContent:'space-between'}}>
+                      <Text style={{fontSize:20,fontFamily:'Roboto',color:'black'}}>Nom:</Text>
+                      <Text>{this.props.User_Info.nomUser}</Text>
+                    </View>
+                    <View style={{paddingLeft:10,paddingRight:10,height:50,justifyContent:'space-between'}}>
+                    <Text style={{fontSize:20,color:'black'}}>Tel:</Text>
+                      <Text>{this.props.User_Info.telUser}</Text>
+                    </View>
+                  </View>
+
+                  <TouchableOpacity
+                  style={{backgroundColor:'#ECF0F1',borderWidth:1,borderColor:'white',flexDirection:'row',alignItems:'center',justifyContent:'space-between',marginTop:20,padding:20}}
+                  onPress={()=>{this.props.navigation.navigate('Modifier Votre Nom')}}
+                  >
+                  <Text style={{fontSize:20}}>Modifier votre Nom</Text>
+                  <Pencil width="30" height="30" fill="rgb(93, 109, 126)" />
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                  style={{backgroundColor:'#ECF0F1',borderWidth:1,borderColor:'white',flexDirection:'row',alignItems:'center',justifyContent:'space-between',marginTop:20,padding:20}}
+                  onPress={()=>{this.props.navigation.navigate('Modifier Votre Tel')}}
+                  >
+                  <Text style={{fontSize:20}}>Modifier votre Numero Telephone</Text>
+                  <Pencil width="30" height="30" fill="rgb(93, 109, 126)" />
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                  style={{backgroundColor:'#63ff9e',borderWidth:1,borderColor:'white',flexDirection:'row',alignItems:'center',justifyContent:'center',marginTop:20,padding:10}}
+                  onPress={()=>{this.SignOut()}}
+                  >
+                    <Text style={{fontSize:20,color:'#34495E'}}>Deconnectez-vous</Text>
+                  </TouchableOpacity>
+
+
+                  </View>
+
            );
     }
 }
@@ -162,4 +206,4 @@ const mapStateToProps = state => {
     return state;
   };
 
-export default connect(mapStateToProps,{ signOut,restoreToken,DROPuserINFOANDEMAIl })(ProfilLivreur);
+export default connect(mapStateToProps,{ signOut,restoreToken,DROPuserINFOANDEMAIl,addColisInfos,dropColisInfos,addUserSelect,dropUserSelect })(ProfilLivreur);

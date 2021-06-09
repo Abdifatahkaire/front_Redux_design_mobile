@@ -96,7 +96,25 @@ async function save(value) {
     await SecureStore.deleteItemAsync('userSelected');
   }
 
+  async function saveEtatConfirm(value){
+    await SecureStore.setItemAsync('etat', JSON.stringify(value));
+  } 
+ 
+  async function getEtatConfirm(){
+    let result = await SecureStore.getItemAsync('etat');
+     
+    if(result){
+       return result;
+    }
+    else{
+        return null;
+    }
+  
+  }
 
+  async function deleteEtatConfirm() {
+    await SecureStore.deleteItemAsync('etat');
+  }
 
 class  ProfilClient extends React.Component {
   
@@ -144,6 +162,7 @@ class  ProfilClient extends React.Component {
        deleteValue();
        deleteUserInfo();
        deleteColisInfos();
+       deleteEtatConfirm();
        deleteUserSelected();
        this.props.dropColisInfos();
        this.props.dropUserSelect();

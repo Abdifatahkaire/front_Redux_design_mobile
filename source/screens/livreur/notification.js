@@ -134,6 +134,12 @@ class  Notifications extends React.Component {
 
      });
 
+     /*this.props.User_Info.socket.on('private AnnulerClientDemande',(data) => {
+
+      this.setState({listDemande:this.state.listDemande.filter((item, index)=>item.id!==id)});
+     })*/
+     
+
 
      axios.get(Connexion.adresse+'/api/afficherColisInfo')
      .then(response=>{
@@ -143,28 +149,29 @@ class  Notifications extends React.Component {
            
            for(let i=0;i<response.data.users.length;i++){
              
+            
+            if(response.data.users[i].utilisateur_A===this.props.User_Info.emailUser){
+               
+              const newColisaffichers={
+               id:this.state.count,
+               emailP:response.data.users[i].utilisateur_P,
+               emailA:response.data.users[i].utilisateur_A,
+               poids:response.data.users[i].poids,
+               adresse:response.data.users[i].adresse,
+               nature:response.data.users[i].nature,
+               etat:response.data.users[i].etat,
+               nom:response.data.users[i].nom,
+               tokens:response.data.users[i].token,
+               socketId_P:response.data.users[i].socketId_P,
+               socketId_A:response.data.users[i].socketId_A
+               }
+                 this.setState({listDemande:[...this.state.listDemande,newColisaffichers]});
+                 this.setState({count:this.state.count+1});
              
-             if(response.data.users[i].utilisateur_A===this.props.User_Info.emailUser){
-               
-               const newColisaffichers={
-                id:this.state.count,
-                emailP:response.data.users[i].utilisateur_P,
-                emailA:response.data.users[i].utilisateur_A,
-                poids:response.data.users[i].poids,
-                adresse:response.data.users[i].adresse,
-                nature:response.data.users[i].nature,
-                etat:response.data.users[i].etat,
-                nom:response.data.users[i].nom,
-                tokens:response.data.users[i].token,
-                socketId_P:response.data.users[i].socketId_P,
-                socketId_A:response.data.users[i].socketId_A
-                }
-                  this.setState({listDemande:[...this.state.listDemande,newColisaffichers]});
-                  this.setState({count:this.state.count+1});
               
-               
 
-              }
+             } 
+             
              
                 
              
@@ -203,6 +210,14 @@ class  Notifications extends React.Component {
         userInfo:item
        });
 
+       axios.post(Connexion.adresse+'/api/SupprimerColisInfos',{emailA:item.emailA})
+     .then(response=>{
+
+      if(response.data.users!==undefined){
+        console.log('colis supprimer');
+      }
+     })
+
     }
 
     AccepterDemandeLivraison(item){
@@ -218,6 +233,16 @@ class  Notifications extends React.Component {
        });
        saveUserSelected(item);
        this.props.addUserSelect(item);
+
+       axios.post(Connexion.adresse+'/api/SupprimerColisInfos',{emailA:item.emailA})
+       .then(response=>{
+  
+        if(response.data.users!==undefined){
+          console.log('colis supprimer');
+        }
+       })
+
+
     }
    
     
@@ -233,7 +258,7 @@ class  Notifications extends React.Component {
                       data={this.state.listDemande}
                       renderItem={({ item, index, separators })=>(
                         <View>
-                          {jwtDecode(item.tokens).exp < Date.now() / 1000 ? <View><Text>demande spirer</Text></View> : <TouchableOpacity 
+                          {jwtDecode(item.tokens).exp < Date.now() / 1000 ? <View style={{marginBottom:5}}><Text>demande expiré</Text></View> : <TouchableOpacity 
                         style={{flexDirection:'row',borderWidth:1,borderColor:'#63ff9e',backgroundColor:'#63ff9e',marginBottom:5,alignItems:'center',padding:20}}
                         
                         >

@@ -9,6 +9,7 @@ import { DROPuserINFOANDEMAIl } from "../../redux/actionUserInfo";
 import MapView from 'react-native-maps';
 import ImagePersonne from '../../Image/Profil_ills1_gray.png';
 import Connexion from "../../../Connexion";
+import { addUserSelect,dropUserSelect } from '../../redux/actionUserSelect';
 
 async function saveUserInfo(value) {
   await SecureStore.setItemAsync('userInfo', JSON.stringify(value));
@@ -128,6 +129,7 @@ class  MapClient extends React.Component {
         }
         this.functionEtatComfirm=this.functionEtatComfirm.bind(this);
         this.functionRecupereNom=this.functionRecupereNom.bind(this);
+        this.functionAnnulerDemandeLivraison=this.functionAnnulerDemandeLivraison.bind(this);
     }
 
     componentDidMount(){
@@ -147,6 +149,15 @@ class  MapClient extends React.Component {
         saveEtatConfirm(0); 
         this.functionRecupereNom();                                                                  
       })
+
+
+      this.props.User_Info.socket.on("private AnnulerLivreurDemande",(data) => {
+        
+        this.setState({etat:null});                                                                 
+        this.props.dropUserSelect();                                                              
+      })
+
+      
 
       this.functionEtatComfirm();
       this.functionRecupereNom();
@@ -177,9 +188,19 @@ class  MapClient extends React.Component {
 
         const etatconfirm=await getEtatConfirm();
         let etatC=JSON.parse(etatconfirm);
+        console.log('getConfirm() map cliente: ',etatC);
         this.setState({etat:etatC});
   
         
+      }
+
+
+      functionAnnulerDemandeLivraison(){
+       
+        const userto=this.props.UserSelect.userSelect.user;
+        this.props.dropUserSelect();
+       this.setState({etat:null});
+
       }
     
 
@@ -217,22 +238,57 @@ class  MapClient extends React.Component {
                    </View>
                    
                 </View>
+                {this.state.etat===null  ? 
+                
                 <View  style={{flex:1,flexDirection:'row'}}>
-                   
                    <View style={{flex:1}}>
                       <Text style={{fontWeight:'bold'}}>Etat demande de livraison:</Text>
-                      <Text>en cours d'attends ...</Text>
+                      <Text style={{color:'#63ff9e'}}>en cours d'attends ...</Text>
                    </View>
-
-                   <TouchableOpacity  
-                    style={{flex:1,justifyContent:'center',alignItems:'center'}}
-                    
+                   <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+                   <TouchableOpacity 
+                    style={{paddingTop:7,paddingBottom:7,paddingLeft:20,paddingRight:20,backgroundColor:'#63ff9e',borderRadius:4}} 
+                  
                    >
-                     <View style={{paddingTop:7,paddingBottom:7,paddingLeft:20,paddingRight:20,backgroundColor:'#63ff9e',borderRadius:4}}><Text>annuler</Text></View>
+                     <Text>annuler</Text>
                      
                    </TouchableOpacity>
-                       
+                   </View>   
                 </View>
+                :
+                
+                <View  style={{flex:1,flexDirection:'row'}}>
+                 {this.state.etat===1 ?   <View style={{flex:1,flexDirection:'row'}}>
+                  
+                 <View style={{flex:1}}>
+                      <Text style={{fontWeight:'bold'}}>Etat demande de livraison:</Text>
+                      <Text style={{color:'#63ff9e'}}>Accepter ...</Text>
+                   </View>
+                    
+
+                 </View> :
+                 
+                  <View style={{flex:1,flexDirection:'row'}}>
+                     <View style={{flex:1}}>
+                      <Text style={{fontWeight:'bold'}}>Etat demande de livraison:</Text>
+                      <Text style={{color:'#63ff9e'}}>refuser ...</Text>
+                   </View>
+                   <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+                   <TouchableOpacity 
+                    style={{paddingTop:7,paddingBottom:7,paddingLeft:20,paddingRight:20,backgroundColor:'#63ff9e',borderRadius:4}} 
+                    onPress={this.functionAnnulerDemandeLivraison}
+                   >
+                     <Text>annuler</Text>
+                     
+                   </TouchableOpacity>
+                   </View>   
+                  </View>
+                 }
+                  <View>
+
+                  </View>
+                </View>
+                }
                  
     
             </View>
@@ -289,4 +345,4 @@ const mapStateToProps = state => {
     return state;
   };
 
-export default connect(mapStateToProps,{ signOut,restoreToken,DROPuserINFOANDEMAIl })(MapClient);
+export default connect(mapStateToProps,{ signOut,restoreToken,DROPuserINFOANDEMAIl,addUserSelect,dropUserSelect })(MapClient);
