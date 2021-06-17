@@ -112,7 +112,7 @@ async function save(value) {
   
   }
 
-  async function deleteEtatConfirm() {
+  async function deleteEtatConfirm(){
     await SecureStore.deleteItemAsync('etat');
   }
 
@@ -153,7 +153,8 @@ class  MapClient extends React.Component {
 
       this.props.User_Info.socket.on("private AnnulerLivreurDemande",(data) => {
         
-        this.setState({etat:null});                                                                 
+        this.setState({etat:null}); 
+        deleteEtatConfirm();                                                                 
         this.props.dropUserSelect();                                                              
       })
 
